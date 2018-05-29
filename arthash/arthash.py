@@ -2,6 +2,7 @@
 
 import hashlib, sys
 
+
 def file_hash(filename, hasher=hashlib.sha256, chunksize=10000000):
     with open(filename, 'rb') as f:
         h = hasher()
