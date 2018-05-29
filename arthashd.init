@@ -1,0 +1,111 @@
+#!/bin/bash
+#
+# arthashd      Startup script for arthashd
+#
+# chkconfig: - 87 12
+# description: arthashd is the arthash daemon
+# config: /etc/arthashd/arthashd.conf
+# config: /etc/sysconfig/arthashd
+# pidfile: /var/run/arthashd.pid
+#
+### BEGIN INIT INFO
+# Provides: arthashd
+# Required-Start: $local_fs
+# Required-Stop: $local_fs
+# Short-Description: start and stop arthashd server
+# Description: arthashd is the arthash daemon
+### END INIT INFO
+
+# Inspired by https://github.com/prehensilecode/python-daemon-example
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+if [ -f /etc/sysconfig/arthashd ]; then
+    . /etc/sysconfig/arthashd
+fi
+
+ARTHASHD=/var/lib/arthashd/arthashd.py
+PROGRAM=arthashd
+PIDFILE=${PIDFILE-/var/run/arthashd.pid}
+LOGFILE=${LOGFILE-/var/log/arthashd.log}
+RETVAL=0
+
+OPTIONS=""
+
+function start() {
+    echo -n $"Starting $PROGRAM: "
+
+    if [[ -f ${PIDFILE} ]] ; then
+        PID=$( cat $PIDFILE  )
+        IS_RUNNING=$( ps -elf | grep  $PID | grep $PROGRAM | grep -v grep )
+
+        if [[ -n ${IS_RUNNING} ]] ; then
+        echo $"$PROGRAM already running"
+        return 0
+        fi
+    fi
+
+    $ARTHASHD -p $PIDFILE -l $LOGFILE $OPTIONS
+
+    RETVAL=$?
+    [ $RETVAL = 0 ] && success || failure
+    echo
+    return $RETVAL
+}
+
+stop() {
+    if [[ -f ${PIDFILE} ]] ; then
+        PID=$( cat $PIDFILE )
+        IS_RUNNING=$( ps -elf | grep $PID | grep $PROGRAM | grep -v grep | awk '{print $4}' )
+
+        if [[ ${IS_RUNNING} -eq ${PID} ]] ; then
+            echo -n $"Stopping $PROGRAM: "
+            kill $PID
+        else
+            echo -n $"$PROGRAM is not running"
+            success
+        fi
+        RETVAL=$?
+    fi
+    echo
+    return $RETVAL
+}
+
+reload() {
+    echo -n $"Reloading $PROGRAM: "
+    echo
+}
+
+# See how we were called.
+case "$1" in
+
+  start)
+    start
+    ;;
+
+  stop)
+    stop
+    ;;
+
+  status)
+    status -p $PIDFILE $ARTHASHD
+    RETVAL=$?
+    ;;
+
+  restart)
+    stop
+    start
+    ;;
+
+  force-reload|reload)
+    reload
+    ;;
+
+  *)
+    echo $"Usage: $PROGRAM {start|stop|restart|force-reload|reload|status}"
+    RETVAL=2
+
+esac
+
+exit $RETVAL
