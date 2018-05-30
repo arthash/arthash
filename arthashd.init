@@ -38,7 +38,7 @@ function start() {
 
     if [[ -f ${PIDFILE} ]] ; then
         PID=$( cat $PIDFILE  )
-        IS_RUNNING=$( ps -elf | grep  $PID | grep $PROGRAM | grep -v grep )
+        IS_RUNNING=$( ps -elf | grep $PID | grep $PROGRAM | grep -v grep )
 
         if [[ -n ${IS_RUNNING} ]] ; then
         echo $"$PROGRAM already running"
@@ -54,7 +54,7 @@ function start() {
     return $RETVAL
 }
 
-stop() {
+function stop() {
     if [[ -f ${PIDFILE} ]] ; then
         PID=$( cat $PIDFILE )
         IS_RUNNING=$( ps -elf | grep $PID | grep $PROGRAM | grep -v grep | awk '{print $4}' )
@@ -72,7 +72,25 @@ stop() {
     return $RETVAL
 }
 
-reload() {
+function stop() {
+    if [[ -f ${PIDFILE} ]] ; then
+        PID=$( cat $PIDFILE )
+        IS_RUNNING=$( ps -elf | grep $PID | grep $PROGRAM | grep -v grep | awk '{print $4}' )
+
+        if [[ ${IS_RUNNING} -eq ${PID} ]] ; then
+            echo -n $"Stopping $PROGRAM: "
+            kill $PID
+        else
+            echo -n $"$PROGRAM is not running"
+            success
+        fi
+        RETVAL=$?
+    fi
+    echo
+    return $RETVAL
+}
+
+function reload() {
     echo -n $"Reloading $PROGRAM: "
     echo
 }
