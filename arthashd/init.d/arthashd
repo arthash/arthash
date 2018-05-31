@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# /etc/init.d/arthashd
+#
+### BEGIN INIT INFO
+# Provides: arthashd
+# Required-Start:
+# Should-Start:
+# Required-Stop:
+# Should-Stop:
+# Default-Start:  3 5
+# Default-Stop:   0 1 2 6
+# Short-Description: Arthash daemon
+# Description:    Publishes arthashes
+### END INIT INFO
+
+NAME=arthashd
+CONFIG_FILE=/etc/default/arthashd
+VIRTUALENV=/usr/share/arthash/virtualenv
+PROGRAM=/usr/share/arthash/arthashd.py
+FLAGS=
+
+[ -r "$CONFIG_FILE" ] && . "$CONFIG_FILE"
+[ -r "$VIRTUALENV" ] && . "$VIRTUALENV/bin/activate"
+
+case "$1" in
+  start)
+    echo "Starting $NAME"
+    python $PROGRAM start $FLAGS
+    ;;
+
+  stop)
+    echo "Stopping $NAME"
+    python $PROGRAM stop $FLAGS
+    ;;
+
+  restart)
+    echo "Restarting $NAME"
+    python $PROGRAM restart $FLAGS
+    ;;
+
+  *)
+    # Refuse to do other stuff
+    echo "Usage: $NAME {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0
