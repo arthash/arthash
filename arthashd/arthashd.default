@@ -1,0 +1,5 @@
+NAME=arthashd
+ROOT=/usr/share/arthash
+VIRTUALENV=$ROOT/virtualenv
+PROGRAM=$ROOT/arthashd.py
+FLAGS=

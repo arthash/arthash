@@ -14,14 +14,12 @@
 # Description:    Publishes arthashes
 ### END INIT INFO
 
-NAME=arthashd
 CONFIG_FILE=/etc/default/arthashd
-VIRTUALENV=/usr/share/arthash/virtualenv
-PROGRAM=/usr/share/arthash/arthashd.py
-FLAGS=
 
 [ -r "$CONFIG_FILE" ] && . "$CONFIG_FILE"
 [ -r "$VIRTUALENV" ] && . "$VIRTUALENV/bin/activate"
+
+FLAGS=
 
 case "$1" in
   start)
