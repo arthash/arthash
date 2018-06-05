@@ -1,5 +1,6 @@
 import random
 
+
 def distribution(data):
     # Do a statistical test with moderate bogosity.
     count = 16 * [0]
@@ -10,14 +11,18 @@ def distribution(data):
             raise ValueError('Not hex ' + data)
     return count
 
+
 def random_hash():
     return ''.join(random.choice('0123456789abcdef') for s in range(64))
+
 
 def dist():
     return distribution(random_hash())
 
+
 def count_values_base(values, dist):
     return [sum((d == v) for d in dist) for v in values]
+
 
 def count_values():
     d = dist()
@@ -35,6 +40,7 @@ def count_many_values(repeats):
 
 def max_count_all_values(repeats):
     return [max(*zip(*i)) for i in range(repeats)]
+
 
 def max_count_values(repeats, value):
     return max(*(count_values(value) for i in range(repeats)))
