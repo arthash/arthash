@@ -5,7 +5,7 @@
 ######    AND POTENTIALLY MAKE ALL HISTORICAL HASHES INVALID!
 ######
 
-import hashlib
+import hashlib, os
 
 HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
@@ -14,10 +14,10 @@ EXCLUDED_PREFIXES = '.'
 def hasher(root, chunksize):
     h = HASH_CLASS()
 
-    for filename in sorted(walk()):
+    for filename in sorted(walk(root)):
         h.update(filename.encode())
 
-        with open(filename, 'rb') as f:
+        with open(os.path.join(root, filename), 'rb') as f:
             chunk = f.read(chunksize)
             while chunk:
                 h.update(chunk)
