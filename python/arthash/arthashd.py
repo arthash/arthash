@@ -54,10 +54,10 @@ class App:
 
     def run(self):
         while True:
-            logger.debug('Debug message')
-            logger.info('Info message')
-            logger.warn('Warning message')
-            logger.error('Error message')
+            self.logger.debug('Debug message')
+            self.logger.info('Info message')
+            self.logger.warn('Warning message')
+            self.logger.error('Error message')
             time.sleep(10)
 
 

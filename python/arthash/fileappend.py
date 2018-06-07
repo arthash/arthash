@@ -36,10 +36,6 @@ def check_hash(hash_code):
     except:
         raise ValueError('Hashes must be in hex')
 
-   # TODO: check for semantic content (spam, profanity)
-   # Out of 0123456789abcdef, with morphisms, that's abcdefoliehsg
-   # so forming spam is challenging but not impossible.
-
 
 def append_hash(filename, hash_code, max_file_size=None):
     """Atomically append to a file using flock.

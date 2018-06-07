@@ -12,6 +12,7 @@ class CheckSpamTest(unittest.TestCase):
 
     def test_failures(self):
         chars = '0123456789abcdef'
+
         def check(size):
             mult = 1 + 64 // size
             segment = chars[:size] * mult

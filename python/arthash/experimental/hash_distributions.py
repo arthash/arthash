@@ -29,7 +29,7 @@ def count_values():
     count = [sum(v == i for v in d) for i in range(16)]
     assert sum(count) == 16
     if count[15] or count[14] or count[13] or count[12] or count[11]:
-        print(d, count)
+        print(d, count)  # noqa T001
     return count
 
 

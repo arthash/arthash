@@ -9,17 +9,20 @@ from arthash.experimental import hash_distributions
 HEADER = """Content-Type: text/plain
 """
 
+printer = print  # noqa T001
+
+
 def run_cgi(filename, hash_code):
-    print(HEADER)
+    printer(HEADER)
 
     try:
         fileappend.append_hash(filename, hash_code)
 
     except Exception as e:
-        print('ERROR:', e, 'for hash', '"%s"' % hash_code)
+        printer('ERROR:', e, 'for hash', '"%s"' % hash_code)
         raise
     else:
-        print('SUCCESS:', hash_code)
+        printer('SUCCESS:', hash_code)
 
 
 if __name__ == '__main__':

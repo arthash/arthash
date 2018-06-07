@@ -22,35 +22,23 @@ def verify_hash(root, cert):
     if is_cert(root):
         raise ValueError('Both files are certs')
 
-    cert_data = json.load(open(filename))
-    arthash = hasher.hasher(root)
+    cert_data = json.load(open(cert))
+    arthash = hasher.hasher(root, CHUNKSIZE)
+    return cert_data, arthash
 
 
+def main(root, cert=None, *rest):
+    if rest:
+        raise ValueError('Must drop either one or two items')
 
-def main(root, cert=None):
     if not cert:
-       make_hash(root)
+        return make_hash(root)
 
-    elif is_cert(cert):
-       verify_hash(root, cert)
+    if not is_cert(cert):
+        root, cert = cert, root
 
-    else:
-        verify_hash(cert, root)
+    return verify_hash(root, cert)
 
 
 if __name__ == '__main__':
     main(*sys.argv[1:])
-
-
-def OLD_add_hash_to(root):
-    fhash = hasher.hasher(root)
-
-    open(fname + '.sha256.txt', 'w').write(fhash + '\n')
-
-
-def OLD_main():
-    for filename in sys.argv[1:]:
-        try:
-            add_hash_to(filename)
-        except Exception as e:
-            print('Exception |', e, '| trying to hash', filename)
