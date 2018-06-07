@@ -1,27 +1,6 @@
-import hashlib, sys
-from . import files
+import hashlib, json, sys
+from . import hasher
 
-"""
-Originally from arthash.app/Contents/document.wflow
-"""
-
-######    BEGIN DANGER
-######    CHANGING ANYTHING BETWEEN THESE LINES WILL CHANGE THE WHOLE
-######    HASH AND POTENTIALLY MAKE ALL HISTORICAL HASHES INVALID!
-
-def directory_hasher(root):
-    h = HASHER()
-
-    for f in files.all_files_under(root, EXCLUDE_PREFIXES):
-        h.update(f.encode())
-
-        for chunk in files.chunk_reader(f, CHUNKSIZE):
-            h.update(chunk)
-
-    return h.hexdigest()
-
-
-######    END DANGER
 
 CHUNKSIZE = 100000000
 SUFFIXES = ['.json', '.txt']
@@ -43,23 +22,29 @@ def verify_hash(root, cert):
     if is_cert(root):
         raise ValueError('Both files are certs')
 
+    cert_data = json.load(open(filename))
+    arthash = hasher.hasher(root)
+
+
 
 def main(root, cert=None):
     if not cert:
-       return make_hash(root)
+       make_hash(root)
 
-    if is_cert(cert):
-        return verify_hash(root, cert)
+    elif is_cert(cert):
+       verify_hash(root, cert)
 
-    return verify_hash(cert, root)
+    else:
+        verify_hash(cert, root)
 
 
 if __name__ == '__main__':
     main(*sys.argv[1:])
 
 
-def OLD_add_hash_to(fname, **kwds):
-    fhash = directory_hash(fname, **kwds)
+def OLD_add_hash_to(root):
+    fhash = hasher.hasher(root)
+
     open(fname + '.sha256.txt', 'w').write(fhash + '\n')
 
 

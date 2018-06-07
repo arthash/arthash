@@ -33,11 +33,8 @@ def exclude(files):
 
 
 def walk(root):
-    if os.path.isfile(root):
-        yield root
-
-    else:
-        for dirpath, dirnames, filenames in os.walk(root):
-            dirnames[:] = exclude(dirnames)
-            filenames[:] = exclude(filenames)
-            yield from (os.path.join(dirpath, f) for f in filenames)
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = exclude(dirnames)
+        for f in exclude(filenames):
+            path = os.path.join(dirpath, f)
+            yield os.path.relpath(path, root)
