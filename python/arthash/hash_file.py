@@ -1,21 +1,27 @@
-import hashlib, json, sys
+import hashlib, json, requests, sys
 from . import hasher
-
 
 CHUNKSIZE = 100000000
 SUFFIXES = ['.json', '.txt']
 CERT_SUFFIXES = ['.arthash' + s for s in SUFFIXES]
 
+QUERY_PATTERN = '{protocol}://{host}:{port}/{path}?{arthash}'
+JOURNAL_PATTERN = '{protocol}://{host}/{path}'
+
+QUERY_HOST = 'http://arthash.org'
+PORT = 6666
+
+
 
 def make_hash(root):
-    pass
+    return hasher.hasher(root, CHUNKSIZE)
 
 
 def is_cert(cert):
     return any(cert.endswith(s) for s in CERT_SUFFIXES)
 
 
-def verify_hash(root, cert):
+def check_hash(root, cert):
     if not is_cert(cert):
         raise ValueError('Neither file is a cert')
 
@@ -23,8 +29,20 @@ def verify_hash(root, cert):
         raise ValueError('Both files are certs')
 
     cert_data = json.load(open(cert))
-    arthash = hasher.hasher(root, CHUNKSIZE)
-    return cert_data, arthash
+
+    try:
+        arthash_cert = cert_data['arthash']
+        journal_page = cert_data['journal_page']
+    except KeyError as e:
+        raise ValueError('No "%s" in cert %s' % (e.args[0], cert))
+
+    arthash_actual = make_hash(root)
+    if arthash_actual != arthash_cert:
+        raise ValueError('arthashes do not match')
+
+
+def register_hash(root):
+    arthash = make_hash(root)
 
 
 def main(root, cert=None, *rest):
@@ -32,12 +50,12 @@ def main(root, cert=None, *rest):
         raise ValueError('Must drop either one or two items')
 
     if not cert:
-        return make_hash(root)
+        return register_hash(root)
 
     if not is_cert(cert):
         root, cert = cert, root
 
-    return verify_hash(root, cert)
+    return check_hash(root, cert)
 
 
 if __name__ == '__main__':
