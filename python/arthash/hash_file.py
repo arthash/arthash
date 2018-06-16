@@ -12,7 +12,6 @@ QUERY_HOST = 'http://arthash.org'
 PORT = 6666
 
 
-
 def make_hash(root):
     return hasher.hasher(root, CHUNKSIZE)
 
@@ -40,9 +39,12 @@ def check_hash(root, cert):
     if arthash_actual != arthash_cert:
         raise ValueError('arthashes do not match')
 
+    return journal_page
+
 
 def register_hash(root):
     arthash = make_hash(root)
+    return arthash
 
 
 def main(root, cert=None, *rest):

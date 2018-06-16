@@ -1,13 +1,13 @@
 import hashlib, unittest
 
-from arthash import check_spam
+from arthash import entropy
 
 
-class CheckSpamTest(unittest.TestCase):
+class EntropyTest(unittest.TestCase):
     def test_good(self):
         h = hashlib.sha256()
         for i in range(100):
-            check_spam.check(h.hexdigest())
+            entropy.check(h.hexdigest())
             h.update(b'x')
 
     def test_failures(self):
@@ -16,7 +16,7 @@ class CheckSpamTest(unittest.TestCase):
         def check(size):
             mult = 1 + 64 // size
             segment = chars[:size] * mult
-            check_spam.check(segment[:64])
+            entropy.check(segment[:64])
 
         for i in range(1, 8):
             with self.assertRaises(ValueError):
