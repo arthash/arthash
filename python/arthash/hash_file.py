@@ -5,11 +5,17 @@ CHUNKSIZE = 100000000
 SUFFIXES = ['.json', '.txt']
 CERT_SUFFIXES = ['.arthash' + s for s in SUFFIXES]
 
-QUERY_PATTERN = '{protocol}://{host}:{port}/{path}?{arthash}'
+QUERY_PATTERN = '{protocol}://{host}:{port}{path}?{arthash}'
 JOURNAL_PATTERN = '{protocol}://{host}/{path}'
 
-QUERY_HOST = 'http://arthash.org'
-PORT = 6666
+QUERY_DEFAULTS = {
+    # 'protocol': 'https',
+    # 'host': 'arthash.org',
+    'protocol': 'http',
+    'host': 'localhost',
+    'port': 7887,
+    'path': '',
+}
 
 
 def make_hash(root):
