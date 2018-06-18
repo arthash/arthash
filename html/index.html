@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html><head>
+<title>arthash</title>
+</head>
+
+<script>
+var count = 0,
+    colors = 3 * 256;
+
+function dimmer() {
+    var periods = Math.floor(count / colors),
+        phase = count % colors;
+
+    // Every other period is backwards.
+    if (! (periods % 2))
+        phase = colors - phase - 1;
+
+    // We advance first red, then green, then blue.
+    var remains = phase % 3,
+        r = Math.floor(phase / 3),
+        g = r + (remains > 0),
+        b = r + (remains > 1),
+        link = document.getElementById('link'),
+        rgb = 'rgb(' + [r, g, b].join(',') + ')';
+
+    link.style.color = rgb;
+    count += 1;
+}
+</script>
+
+<body onLoad="setInterval(dimmer, 20)">
+<p style="font-size:3000px; font-family:monospace; margin-top:-700px; margin-left:-50px; ">
+<a href="https://github.com/arthash/arthash" style="text-decoration:none" id="link">
+#
+</a>
+</body> </html>
