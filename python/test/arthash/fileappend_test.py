@@ -1,4 +1,4 @@
-from . import fileappend
+from arthash import fileappend
 
 import threading, time, sys
 
