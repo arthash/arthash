@@ -1,0 +1,15 @@
+language: python
+
+python:
+- '3.4'
+- '3.5'
+- '3.6'
+
+install:
+- pip install -r requirements/arthash.txt
+- pip install -r requirements/arthashd.txt
+- pip install -r requirements/tests.txt
+
+script:
+- flake8
+- pytest
