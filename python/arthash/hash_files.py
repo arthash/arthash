@@ -1,9 +1,15 @@
-import datetime, os
+import datetime, json, os
+
+from os import listdir
+from os.path import isdir
+
+open = __builtins__['open']
 
 
 def last_hash_file(f):
-    while os.path.isdir(f):
-        files = [f for f in os.listdir(f) if not f.startswith('.')]
+    while isdir(f):
+        print('!!! listdir', listdir(f))
+        files = [f for f in listdir(f) if not f.startswith('.')]
         if not files:
             return
         f = os.path.join(f, sorted(files)[-1])
@@ -15,10 +21,12 @@ def next_hash_file(f):
     f, d3 = os.path.split(f)
     f, d2 = os.path.split(f)
     f, d1 = os.path.split(f)
-    assert not f
+    if f:
+        raise ValueError(f)
 
     d4, suffix = os.path.splitext(d4_json)
-    assert suffix == '.json'
+    if suffix != '.json':
+        raise ValueError(suffix)
 
     numbers = [int(i, 16) for i in (d1, d2, d3, d4)]
 
@@ -51,10 +59,14 @@ class HashFiles:
             self.last = os.path.join(root, next_parts)
             self.page = []
 
-        timestamp = datetime.datetime.utcnow().isoformat()
-        self.page.append([arthash, timestamp])
-        with fp as open(self.last, 'w'):
-            json.dump(data, fp, indent=2)
+        self.page.append([arthash, timestamp()])
+        with open(self.last, 'w') as fp:
+            json.dump(self.page, fp, indent=2)
+
+
+def timestamp():
+    return datetime.datetime.utcnow().isoformat()
+
 
 
 """
