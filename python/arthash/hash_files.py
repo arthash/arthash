@@ -1,6 +1,6 @@
 import datetime, json, os
 
-from os import listdir
+from os import listdir, makedirs
 from os.path import isdir
 
 open = __builtins__['open']
@@ -8,7 +8,6 @@ open = __builtins__['open']
 
 def last_hash_file(f):
     while isdir(f):
-        print('!!! listdir', listdir(f))
         files = [f for f in listdir(f) if not f.startswith('.')]
         if not files:
             return
@@ -46,27 +45,29 @@ class HashFiles:
     def __init__(self, root):
         self.root = root
         self.last = last_hash_file(root)
-        self.page = self.last and json.load(open(self.last))
+        if self.last:
+            self.page = json.load(open(self.last))
+        else:
+            self._set_last(os.path.join(self.root, '00/00/00/00.json'))
 
     def add_hash(self, arthash):
-        if not self.last:
-            self.last = os.path.join(root, '00/00/00/00.json')
-            self.page = []
-
-        elif len(self.page) >= 255:
+        if len(self.page) >= 256:
             parts = os.path.relpath(self.last, self.root)
             next_parts = next_hash_file(parts)
-            self.last = os.path.join(root, next_parts)
-            self.page = []
+            self._set_last(os.path.join(self.root, next_parts))
 
         self.page.append([arthash, timestamp()])
         with open(self.last, 'w') as fp:
             json.dump(self.page, fp, indent=2)
 
+    def _set_last(self, last):
+        self.last = last
+        self.page = []
+        makedirs(os.path.dirname(last), exist_ok=True)
+
 
 def timestamp():
     return datetime.datetime.utcnow().isoformat()
-
 
 
 """

@@ -2,7 +2,7 @@ import flask, os
 from werkzeug.serving import run_simple
 
 
-class RestServer(runnable.LoopThread):
+class RestServer:
     def __init__(self, port, external_access, directory):
         super().__init__()
         self.port = port
