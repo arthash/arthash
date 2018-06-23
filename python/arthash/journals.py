@@ -6,7 +6,7 @@ from os.path import isdir
 open = __builtins__['open']
 
 
-def last_hash_file(f):
+def last_file(f):
     while isdir(f):
         files = [f for f in listdir(f) if not f.startswith('.')]
         if not files:
@@ -15,7 +15,7 @@ def last_hash_file(f):
     return f
 
 
-def next_hash_file(f):
+def next_file(f):
     f, d4_json = os.path.split(f)
     f, d3 = os.path.split(f)
     f, d2 = os.path.split(f)
@@ -41,10 +41,10 @@ def next_hash_file(f):
     return os.path.join(*parts)
 
 
-class HashFiles:
+class Journals:
     def __init__(self, root):
         self.root = root
-        self.last = last_hash_file(root)
+        self.last = last_file(root)
         if self.last:
             self.page = json.load(open(self.last))
         else:
@@ -53,7 +53,7 @@ class HashFiles:
     def add_hash(self, arthash):
         if len(self.page) >= 256:
             parts = os.path.relpath(self.last, self.root)
-            next_parts = next_hash_file(parts)
+            next_parts = next_file(parts)
             self._set_last(os.path.join(self.root, next_parts))
 
         self.page.append([arthash, timestamp()])
