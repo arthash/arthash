@@ -1,8 +1,8 @@
 DEBUG = True
 
-FINAL_IP_ADDRESS = 'https://arthash.org'
-DEBUG_IP_ADDRESS = 'http://localhost'
-IP_ADDRESS = DEBUG_IP_ADDRESS if DEBUG else FINAL_IP_ADDRESS
+FINAL_ADDRESS = 'https://arthash.org'
+DEBUG_ADDRESS = 'http://localhost'
+ADDRESS = DEBUG_ADDRESS if DEBUG else FINAL_ADDRESS
 
 PORT = 7887
 

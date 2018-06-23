@@ -3,17 +3,20 @@ import argparse, sys
 from . import constants, files
 
 
-def run(arthashing, verification, argv=sys.argv):
-    """
-    Arguments:
-      arthashing: a function (document, args)
-      verification: a function (document, certificate, args)
-    """
-    args = _make_parser().parse(argv)
-    cert, doc = args.certificate, args.document
+def arguments(argv=sys.argv):
+    parser = _make_parser()
+    args = parser.parse(argv)
+    _fix_document_and_certificate(args)
+    return args
 
+
+def _fix_document_and_certificate(args):
+    # The user has no control over which way the documents come in in
+    # drag-and-drop, so it might be that the document and certificate
+    # need to be switched.
+    cert, doc = args.certificate, args.document
     if not cert:
-        return arthashing(doc, args)
+        return
 
     c, d = files.is_certificate(cert), files.is_certificate(doc)
 
@@ -24,14 +27,11 @@ def run(arthashing, verification, argv=sys.argv):
         raise ValueError('Neither file is a certificate')
 
     if not c:
-        # doc is a certificate, and cert isn't.
-        doc, cert = cert, doc
-
-    return verification(doc, cert, args)
+        args.document, args.certificate = cert, doc
 
 
-def _make_parser():
-    parser = argparse.ArgumentParser()
+def _make_parser(argv):
+    parser = argparse.ArgumentParser(argv)
 
     parser.add_argument(
         'document', nargs='1', help='The document to arthash')
@@ -41,8 +41,8 @@ def _make_parser():
         default=None)
 
     parser.add_argument(
-        '-i', '--ipaddress', help='arthashd server IP address',
-        default=constants.IP_ADDRESS)
+        '-', '--address', help='arthashd server address',
+        default=constants.ADDRESS)
 
     parser.add_argument(
         '-p', '--port', help='arthashd server port ',
