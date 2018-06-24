@@ -6,8 +6,6 @@ ADDRESS = DEBUG_ADDRESS if DEBUG else FINAL_ADDRESS
 
 PORT = 7887
 
-PATH = ''
-
 """
 The size of file chunks we read and hash.  The arthash computation is
 independent of the CHUNKSIZE setting.

@@ -41,7 +41,7 @@ def _make_parser(argv):
         default=None)
 
     parser.add_argument(
-        '-', '--address', help='arthashd server address',
+        '-s', '--server', help='arthashd server address',
         default=constants.ADDRESS)
 
     parser.add_argument(

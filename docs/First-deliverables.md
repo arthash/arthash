@@ -10,11 +10,13 @@ There are two:
 The `arthashd` server is a *nix daemon written in Python with a little bit of
 `bash` glue code.
 
-The `arthashd` server provides just one service: _arthash journaling_:
+The `arthashd` server provides just one service: _arthash journaling_.
+
 `arthashd` is sent a hash by a client, writes that hash and a timestamp into a
 JSON file that's called a _journal_, and sends back the URL of the journal page.
-Finally, the server requests that archive.org archives the journal page - this
-must be performed in a separate thread and rate limited.
+
+As a side effect, the server requests that archive.org archives the journal
+page - this must be performed in a separate thread and rate limited.
 
 ## `arthasher`
 
