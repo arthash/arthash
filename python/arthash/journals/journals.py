@@ -1,6 +1,6 @@
 import datetime, json, os
 from os import makedirs
-from . import index_file, sequence
+from . import sequence, write_file
 
 open = __builtins__['open']
 
@@ -26,7 +26,7 @@ class Journals:
             json.dump(self.page, fp, indent=2)
 
         if not exists:
-            index_file.add_index_file(self.last)
+            write_file.add_index_file(self.last)
 
     def _set_last(self, last):
         self.last = last
