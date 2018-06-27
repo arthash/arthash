@@ -2,8 +2,6 @@ import json, os, unittest
 from unittest.mock import mock_open, patch, DEFAULT
 from arthash.journals import journals
 
-# import next_file, last_file, Journals
-
 BASE = os.path.dirname(__file__)
 
 DATA_HASH1 = '9b36b58806fa34131ce330c18a4bb01f73d70413da84c9d3e744e4cf0ea00101'
@@ -17,39 +15,10 @@ RECORD2 = [[DATA_HASH2, TIMESTAMP2]]
 
 
 class JournalFilesTest(unittest.TestCase):
-    def test_next_file(self):
-        self.assertEqual(journals.next_file('00/00/00/00.json'),
-                         '00/00/00/01.json')
-        self.assertEqual(journals.next_file('00/00/00/01.json'),
-                         '00/00/00/02.json')
-        self.assertEqual(journals.next_file('00/00/00/fe.json'),
-                         '00/00/00/ff.json')
-        self.assertEqual(journals.next_file('00/00/00/ff.json'),
-                         '00/00/01/00.json')
-        self.assertEqual(journals.next_file('00/00/01/00.json'),
-                         '00/00/01/01.json')
-        self.assertEqual(journals.next_file('00/00/ff/ff.json'),
-                         '00/01/00/00.json')
-        self.assertEqual(journals.next_file('00/ff/ff/ff.json'),
-                         '01/00/00/00.json')
-        self.assertEqual(journals.next_file('ff/ff/ff/ff.json'),
-                         '100/00/00/00.json')
-
-    @patch.multiple('arthash.journals.journals', autospec=True,
+    @patch.multiple('arthash.journals.sequence', autospec=True,
                     isdir=DEFAULT, listdir=DEFAULT)
-    def test_last_file2(self, listdir, isdir):
-        directory = {
-            'journals': ['00', '01', '02', 'index.html'],
-            'journals/02': ['00.json', '01.json', 'index.html'],
-        }
-        isdir.side_effect = lambda f: not f.endswith('.json')
-        listdir.side_effect = directory.__getitem__
-
-        self.assertEqual(journals.last_file('journals'), 'journals/02/01.json')
-
     @patch.multiple('arthash.journals.journals', autospec=True,
-                    isdir=DEFAULT, listdir=DEFAULT, makedirs=DEFAULT,
-                    open=DEFAULT, timestamp=DEFAULT)
+                    makedirs=DEFAULT, open=DEFAULT, timestamp=DEFAULT)
     def test_journals(self, timestamp, open, makedirs, listdir, isdir):
         directory = {
             'journals': ['00', '01', '02'],
@@ -69,9 +38,10 @@ class JournalFilesTest(unittest.TestCase):
         self.assertEqual(hf.page, RECORD1 + RECORD2)
         self.assertEqual(get_writes(open), hf.page)
 
+    @patch.multiple('arthash.journals.sequence', autospec=True,
+                    isdir=DEFAULT, listdir=DEFAULT)
     @patch.multiple('arthash.journals.journals', autospec=True,
-                    isdir=DEFAULT, listdir=DEFAULT, makedirs=DEFAULT,
-                    open=DEFAULT, timestamp=DEFAULT)
+                    makedirs=DEFAULT, open=DEFAULT, timestamp=DEFAULT)
     def test_overflow(self, timestamp, open, makedirs, listdir, isdir):
         directory = {
             'journals': ['00', '01', '02'],
@@ -95,9 +65,10 @@ class JournalFilesTest(unittest.TestCase):
         self.assertEqual(get_writes(open), hf.page)
         makedirs.assert_called_with('journals/02/00/01', exist_ok=True)
 
+    @patch.multiple('arthash.journals.sequence', autospec=True,
+                    isdir=DEFAULT, listdir=DEFAULT)
     @patch.multiple('arthash.journals.journals', autospec=True,
-                    isdir=DEFAULT, listdir=DEFAULT, makedirs=DEFAULT,
-                    open=DEFAULT, timestamp=DEFAULT)
+                    makedirs=DEFAULT, open=DEFAULT, timestamp=DEFAULT)
     def test_overflow2(self, timestamp, open, makedirs, listdir, isdir):
         directory = {'journals': []}
 
