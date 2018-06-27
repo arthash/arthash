@@ -17,9 +17,10 @@ RECORD2 = [[DATA_HASH2, TIMESTAMP2]]
 class JournalFilesTest(unittest.TestCase):
     @patch.multiple('arthash.journals.sequence', autospec=True,
                     isdir=DEFAULT, listdir=DEFAULT)
+    @patch.multiple('arthash.journals.journal_files', autospec=True,
+                    makedirs=DEFAULT, open=DEFAULT)
     @patch.multiple('arthash.journals.journals', autospec=True,
-                    makedirs=DEFAULT, timestamp=DEFAULT)
-    @patch.multiple('arthash.journals.journal_files', autospec=True, open=DEFAULT)
+                    timestamp=DEFAULT)
     def test_journals(self, timestamp, open, makedirs, listdir, isdir):
         directory = {
             'journals': ['00', '01', '02'],
@@ -41,9 +42,10 @@ class JournalFilesTest(unittest.TestCase):
 
     @patch.multiple('arthash.journals.sequence', autospec=True,
                     isdir=DEFAULT, listdir=DEFAULT)
+    @patch.multiple('arthash.journals.journal_files', autospec=True,
+                    makedirs=DEFAULT, open=DEFAULT)
     @patch.multiple('arthash.journals.journals', autospec=True,
-                    makedirs=DEFAULT, timestamp=DEFAULT)
-    @patch.multiple('arthash.journals.journal_files', autospec=True, open=DEFAULT)
+                    timestamp=DEFAULT)
     def test_overflow(self, open, timestamp, makedirs, listdir, isdir):
         directory = {
             'journals': ['00', '01', '02'],
@@ -69,9 +71,10 @@ class JournalFilesTest(unittest.TestCase):
 
     @patch.multiple('arthash.journals.sequence', autospec=True,
                     isdir=DEFAULT, listdir=DEFAULT)
+    @patch.multiple('arthash.journals.journal_files', autospec=True,
+                    makedirs=DEFAULT, open=DEFAULT)
     @patch.multiple('arthash.journals.journals', autospec=True,
-                    makedirs=DEFAULT, timestamp=DEFAULT)
-    @patch.multiple('arthash.journals.journal_files', autospec=True, open=DEFAULT)
+                    timestamp=DEFAULT)
     def test_overflow2(self, timestamp, open, makedirs, listdir, isdir):
         directory = {'journals': []}
 
@@ -83,9 +86,9 @@ class JournalFilesTest(unittest.TestCase):
         hf = journals.Journals('journals')
         self.assertEqual(hf.last, 'journals/00/00/00/00.json')
         self.assertEqual(hf.page, [])
-        makedirs.assert_called_with('journals/00/00/00', exist_ok=True)
 
         hf.add_hash(DATA_HASH2)
+        makedirs.assert_called_with('journals/00/00/00', exist_ok=True)
         self.assertEqual(hf.last, 'journals/00/00/00/00.json')
         self.assertEqual(hf.page, [[DATA_HASH2, TIMESTAMP2]])
         self.assertEqual(get_writes(open), hf.page)

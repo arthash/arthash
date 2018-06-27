@@ -1,15 +1,19 @@
 import json, os
+from os import makedirs
 
 open = __builtins__['open']
 
 
 def write(journal_file, page):
     exists = os.path.exists(journal_file)
+    if not exists:
+        makedirs(os.path.dirname(journal_file), exist_ok=True)
+
     with open(journal_file, 'w') as fp:
         json.dump(page, fp, indent=2)
 
-    if not exists:
-        pass
+    if exists:
+        return
 
 
 def read(journal_file):

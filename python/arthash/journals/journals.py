@@ -1,5 +1,4 @@
 import datetime, json, os
-from os import makedirs
 from . import sequence, journal_files
 
 
@@ -24,7 +23,6 @@ class Journals:
     def _set_last(self, last):
         self.last = last
         self.page = []
-        makedirs(os.path.dirname(last), exist_ok=True)
 
 
 def timestamp():
