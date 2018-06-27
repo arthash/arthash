@@ -6,9 +6,15 @@ from os.path import isdir
 open = __builtins__['open']
 
 
+def is_journal_file(f):
+    if not f.startswith('.'):
+        _, suffix = os.path.splitext(f)
+        return suffix in ('', '.json')
+
+
 def last_file(f):
     while isdir(f):
-        files = [f for f in listdir(f) if not f.startswith('.')]
+        files = [f for f in listdir(f) if is_journal_file(f)]
         if not files:
             return
         f = os.path.join(f, sorted(files)[-1])

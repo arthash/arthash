@@ -39,8 +39,8 @@ class JournalFilesTest(unittest.TestCase):
                     isdir=DEFAULT, listdir=DEFAULT)
     def test_last_file2(self, listdir, isdir):
         directory = {
-            'journals': ['00', '01', '02'],
-            'journals/02': ['00.json', '01.json'],
+            'journals': ['00', '01', '02', 'index.html'],
+            'journals/02': ['00.json', '01.json', 'index.html'],
         }
         isdir.side_effect = lambda f: not f.endswith('.json')
         listdir.side_effect = directory.__getitem__
