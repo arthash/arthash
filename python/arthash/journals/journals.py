@@ -2,22 +2,17 @@ import datetime, json, os
 from os import listdir, makedirs
 from os.path import isdir
 from . import index_file
+from .. import files
 
 open = __builtins__['open']
 
 
-def is_journal_file(f):
-    if not f.startswith('.'):
-        _, suffix = os.path.splitext(f)
-        return suffix in ('', '.json')
-
-
 def last_file(f):
     while isdir(f):
-        files = [f for f in listdir(f) if is_journal_file(f)]
-        if not files:
+        dfiles = [f for f in listdir(f) if files.is_journal_file(f)]
+        if not dfiles:
             return
-        f = os.path.join(f, sorted(files)[-1])
+        f = os.path.join(f, sorted(dfiles)[-1])
     return f
 
 
