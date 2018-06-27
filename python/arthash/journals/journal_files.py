@@ -3,13 +3,17 @@ import json, os
 open = __builtins__['open']
 
 
-def write_file(journal_file, page):
+def write(journal_file, page):
     exists = os.path.exists(journal_file)
     with open(journal_file, 'w') as fp:
         json.dump(page, fp, indent=2)
 
     if not exists:
         pass
+
+
+def read(journal_file):
+    return json.load(open(journal_file))
 
 
 def _write_index_file(filename, body):

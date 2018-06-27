@@ -19,7 +19,7 @@ class JournalFilesTest(unittest.TestCase):
                     isdir=DEFAULT, listdir=DEFAULT)
     @patch.multiple('arthash.journals.journals', autospec=True,
                     makedirs=DEFAULT, timestamp=DEFAULT)
-    @patch.multiple('arthash.journals.write_file', autospec=True, open=DEFAULT)
+    @patch.multiple('arthash.journals.journal_files', autospec=True, open=DEFAULT)
     def test_journals(self, timestamp, open, makedirs, listdir, isdir):
         directory = {
             'journals': ['00', '01', '02'],
@@ -43,7 +43,7 @@ class JournalFilesTest(unittest.TestCase):
                     isdir=DEFAULT, listdir=DEFAULT)
     @patch.multiple('arthash.journals.journals', autospec=True,
                     makedirs=DEFAULT, timestamp=DEFAULT)
-    @patch.multiple('arthash.journals.write_file', autospec=True, open=DEFAULT)
+    @patch.multiple('arthash.journals.journal_files', autospec=True, open=DEFAULT)
     def test_overflow(self, open, timestamp, makedirs, listdir, isdir):
         directory = {
             'journals': ['00', '01', '02'],
@@ -71,7 +71,7 @@ class JournalFilesTest(unittest.TestCase):
                     isdir=DEFAULT, listdir=DEFAULT)
     @patch.multiple('arthash.journals.journals', autospec=True,
                     makedirs=DEFAULT, timestamp=DEFAULT)
-    @patch.multiple('arthash.journals.write_file', autospec=True, open=DEFAULT)
+    @patch.multiple('arthash.journals.journal_files', autospec=True, open=DEFAULT)
     def test_overflow2(self, timestamp, open, makedirs, listdir, isdir):
         directory = {'journals': []}
 
