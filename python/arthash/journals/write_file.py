@@ -1,5 +1,15 @@
-def add_index_file(journal_file):
-    pass
+import json, os
+
+open = __builtins__['open']
+
+
+def write_file(journal_file, page):
+    exists = os.path.exists(journal_file)
+    with open(journal_file, 'w') as fp:
+        json.dump(page, fp, indent=2)
+
+    if not exists:
+        pass
 
 
 def _write_index_file(filename, body):
