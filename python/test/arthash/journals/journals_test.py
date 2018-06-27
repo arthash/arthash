@@ -1,6 +1,6 @@
 import json, os, unittest
 from unittest.mock import mock_open, patch, DEFAULT
-from arthash import journals
+from arthash.journals import journals
 
 # import next_file, last_file, Journals
 
@@ -35,7 +35,7 @@ class JournalFilesTest(unittest.TestCase):
         self.assertEqual(journals.next_file('ff/ff/ff/ff.json'),
                          '100/00/00/00.json')
 
-    @patch.multiple('arthash.journals', autospec=True,
+    @patch.multiple('arthash.journals.journals', autospec=True,
                     isdir=DEFAULT, listdir=DEFAULT)
     def test_last_file2(self, listdir, isdir):
         directory = {
@@ -47,7 +47,7 @@ class JournalFilesTest(unittest.TestCase):
 
         self.assertEqual(journals.last_file('journals'), 'journals/02/01.json')
 
-    @patch.multiple('arthash.journals', autospec=True,
+    @patch.multiple('arthash.journals.journals', autospec=True,
                     isdir=DEFAULT, listdir=DEFAULT, makedirs=DEFAULT,
                     open=DEFAULT, timestamp=DEFAULT)
     def test_journals(self, timestamp, open, makedirs, listdir, isdir):
@@ -69,7 +69,7 @@ class JournalFilesTest(unittest.TestCase):
         self.assertEqual(hf.page, RECORD1 + RECORD2)
         self.assertEqual(get_writes(open), hf.page)
 
-    @patch.multiple('arthash.journals', autospec=True,
+    @patch.multiple('arthash.journals.journals', autospec=True,
                     isdir=DEFAULT, listdir=DEFAULT, makedirs=DEFAULT,
                     open=DEFAULT, timestamp=DEFAULT)
     def test_overflow(self, timestamp, open, makedirs, listdir, isdir):
@@ -95,7 +95,7 @@ class JournalFilesTest(unittest.TestCase):
         self.assertEqual(get_writes(open), hf.page)
         makedirs.assert_called_with('journals/02/00/01', exist_ok=True)
 
-    @patch.multiple('arthash.journals', autospec=True,
+    @patch.multiple('arthash.journals.journals', autospec=True,
                     isdir=DEFAULT, listdir=DEFAULT, makedirs=DEFAULT,
                     open=DEFAULT, timestamp=DEFAULT)
     def test_overflow2(self, timestamp, open, makedirs, listdir, isdir):
