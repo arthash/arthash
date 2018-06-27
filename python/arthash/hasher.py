@@ -11,27 +11,34 @@ HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
 
 
-def hasher(root, chunksize):
+def hasher(document, chunksize):
     h = HASH_CLASS()
 
-    for filename in sorted(_walk(root)):
-        h.update(filename.encode())
-
-        with open(os.path.join(root, filename), 'rb') as f:
+    def hash_file(filename):
+        with open(os.path.join(filename), 'rb') as f:
             chunk = f.read(chunksize)
             while chunk:
                 h.update(chunk)
                 chunk = f.read(chunksize)
 
+    h.update(os.path.basename(document).encode())
+
+    if os.path.isdir(document):
+        for filename in sorted(_walk(document)):
+            h.update(filename.encode())
+            hash_file(os.path.join(document, filename))
+    else:
+        hash_file(document)
+
     return h.hexdigest()
 
 
-def _walk(root):
-    for dirpath, dirnames, filenames in os.walk(root):
+def _walk(document):
+    for dirpath, dirnames, filenames in os.walk(document):
         dirnames[:] = _exclude(dirnames)
         for f in _exclude(filenames):
             path = os.path.join(dirpath, f)
-            yield os.path.relpath(path, root)
+            yield os.path.relpath(path, document)
 
 
 def _exclude(files):
