@@ -15,11 +15,13 @@ def hasher(document, chunksize):
     h = HASH_CLASS()
 
     def hash_file(filename):
+        fh = HASH_CLASS()
         with open(os.path.join(filename), 'rb') as f:
             chunk = f.read(chunksize)
             while chunk:
-                h.update(chunk)
+                fh.update(chunk)
                 chunk = f.read(chunksize)
+        h.update(fh.hexdigest().encode())
 
     h.update(os.path.basename(document).encode())
 
