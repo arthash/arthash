@@ -1,5 +1,7 @@
 import json, requests
-from . import arguments, data_file, files
+from .. import files
+from .. util import data_file
+from . import arguments
 
 
 def verification(document, certificate, args):

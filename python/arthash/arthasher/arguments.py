@@ -1,6 +1,6 @@
 import argparse, sys
 
-from . import constants, files
+from .. util import constants, files
 
 
 def arguments(argv=sys.argv):

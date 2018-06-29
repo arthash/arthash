@@ -1,5 +1,6 @@
 import os, webbrowser
-from . import data_file, files
+from .. import files
+from .. util import data_file
 
 
 def arthashing(args):

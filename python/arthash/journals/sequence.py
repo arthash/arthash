@@ -1,7 +1,7 @@
 import os
 from os import listdir
 from os.path import isdir
-from .. import files
+from .. util import files
 
 
 def last_file(f):

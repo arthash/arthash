@@ -1,6 +1,6 @@
 import hashlib, unittest
 
-from arthash import entropy
+from arthash.util import entropy
 
 
 class EntropyTest(unittest.TestCase):
