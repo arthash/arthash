@@ -12,8 +12,8 @@ def write(journal_file, page):
     with open(journal_file, 'w') as fp:
         json.dump(page, fp, indent=2)
 
-    if not exists:
-        return
+    if False and not exists:
+        write_indexes(journal_file)
 
 
 def read(journal_file):
@@ -39,8 +39,18 @@ def link_lines(directory):
     yield '</table>'
 
 
-def _write_index_file(filename, title, body):
-    with open(filename, 'w') as fp:
+def write_indexes(journal_file):
+    d = os.path.dirname(journal_file)
+    write_index(d)
+    write_index(os.path.dirname(d))
+    write_index(os.path.dirname(os.path.dirname(d)))
+    write_index(os.path.dirname(os.path.dirname(os.path.dirname(d))))
+
+
+def write_index(directory, title='artHash index page'):
+    body = '\n'.join(link_lines(directory))
+    index_filename = os.path.join(directory, 'index.html')
+    with open(index_filename, 'w') as fp:
         fp.write(DOC_TEMPLATE.format(title=title, body=body))
 
 
