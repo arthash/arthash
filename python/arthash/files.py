@@ -1,5 +1,6 @@
 import os
-from . import constants, hasher
+from . import constants
+from . util import hasher
 
 SUFFIXES = ['.json', '.txt']
 CERT_SUFFIXES = ['.arthash' + s for s in SUFFIXES]

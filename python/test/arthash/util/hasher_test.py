@@ -1,5 +1,5 @@
 import hashlib, os, unittest
-from arthash import hasher
+from arthash.util import hasher
 from unittest import mock
 
 BASE = os.path.dirname(__file__)
@@ -39,7 +39,7 @@ class HasherTest(unittest.TestCase):
         h1 = hasher.hasher(os.path.join(BASE, 'different_data'), 100)
         self.assertNotEqual(h0, h1)
 
-    @mock.patch('arthash.hasher.HASH_CLASS', autospec=True)
+    @mock.patch('arthash.util.hasher.HASH_CLASS', autospec=True)
     def test_calls(self, HASH_CLASS):
         calls = []
 
