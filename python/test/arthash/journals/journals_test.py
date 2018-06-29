@@ -14,7 +14,7 @@ RECORD1 = [[DATA_HASH1, TIMESTAMP1]]
 RECORD2 = [[DATA_HASH2, TIMESTAMP2]]
 
 
-class JournalFilesTest(unittest.TestCase):
+class JournalsTest(unittest.TestCase):
     @patch.multiple('arthash.journals.sequence', autospec=True,
                     isdir=DEFAULT, listdir=DEFAULT)
     @patch.multiple('arthash.journals.journal_files', autospec=True,
