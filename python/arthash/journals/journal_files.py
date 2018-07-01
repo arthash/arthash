@@ -21,6 +21,7 @@ def read(journal_file):
 
 
 def link_lines(directory):
+    listdir = os.listdir
     files = sorted(f for f in listdir(directory) if not f.startswith('.'))
 
     yield '<table>'
