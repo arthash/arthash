@@ -1,13 +1,10 @@
 import json, os
-from os import listdir, makedirs
-
-open = __builtins__['open']
 
 
 def write(journal_file, page):
     exists = os.path.exists(journal_file)
     if not exists:
-        makedirs(os.path.dirname(journal_file), exist_ok=True)
+        os.makedirs(os.path.dirname(journal_file), exist_ok=True)
 
     with open(journal_file, 'w') as fp:
         json.dump(page, fp, indent=2)
@@ -21,8 +18,7 @@ def read(journal_file):
 
 
 def link_lines(directory):
-    listdir = os.listdir
-    files = sorted(f for f in listdir(directory) if not f.startswith('.'))
+    files = sorted(f for f in os.listdir(directory) if not f.startswith('.'))
 
     yield '<table>'
     for i, filename in enumerate(files):

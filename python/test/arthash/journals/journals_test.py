@@ -1,5 +1,6 @@
 import json, os, unittest
 from unittest.mock import mock_open, patch, DEFAULT
+from pyfakefs.fake_filesystem_unittest import TestCase
 from arthash.journals import journals
 
 BASE = os.path.dirname(__file__)
@@ -14,91 +15,71 @@ RECORD1 = [[DATA_HASH1, TIMESTAMP1]]
 RECORD2 = [[DATA_HASH2, TIMESTAMP2]]
 
 
-class JournalsTest(unittest.TestCase):
-    @patch.multiple('arthash.journals.sequence', autospec=True,
-                    isdir=DEFAULT, listdir=DEFAULT)
-    @patch.multiple('arthash.journals.journal_files', autospec=True,
-                    makedirs=DEFAULT, open=DEFAULT)
-    @patch.multiple('arthash.journals.journals', autospec=True,
-                    timestamp=DEFAULT)
-    def test_journals(self, timestamp, open, makedirs, listdir, isdir):
-        directory = {
-            'journals': ['00', '01', '02'],
-            'journals/02': ['00.json', '01.json'],
-        }
+class JournalsTest(TestCase):
+    def setUp(self):
+        self.setUpPyfakefs()
 
-        isdir.side_effect = lambda f: not f.endswith('.json')
-        listdir.side_effect = directory.__getitem__
-        open.side_effect = mock_open(read_data=json.dumps(RECORD1))
-        timestamp.side_effect = lambda: TIMESTAMP2
+    @patch('arthash.journals.journals.timestamp', autospec=True)
+    def test_journals(self, timestamp):
+        timestamp.return_value = TIMESTAMP2
+
+        contents = json.dumps(RECORD1)
+        self.fs.create_file('journals/index.html')
+        self.fs.create_file('journals/00/index.html')
+        self.fs.create_file('journals/01/index.html')
+        self.fs.create_file('journals/02/index.html')
+        self.fs.create_file('journals/02/00.json')
+        self.fs.create_file('journals/02/01.json', contents=contents)
 
         hf = journals.Journals('journals')
         self.assertEqual(hf.last, 'journals/02/01.json')
         self.assertEqual(hf.page, RECORD1)
 
         hf.add_hash(DATA_HASH2)
+
         self.assertEqual(hf.page, RECORD1 + RECORD2)
-        self.assertEqual(get_writes(open), hf.page)
+        actual_page = json.load(open('journals/02/01.json'))
+        self.assertEqual(actual_page, hf.page)
 
-    @patch.multiple('arthash.journals.sequence', autospec=True,
-                    isdir=DEFAULT, listdir=DEFAULT)
-    @patch.multiple('arthash.journals.journal_files', autospec=True,
-                    makedirs=DEFAULT, open=DEFAULT)
-    @patch.multiple('arthash.journals.journals', autospec=True,
-                    timestamp=DEFAULT)
-    def test_overflow(self, open, timestamp, makedirs, listdir, isdir):
-        directory = {
-            'journals': ['00', '01', '02'],
-            'journals/02': ['00'],
-            'journals/02/00': ['00', '01'],
-            'journals/02/00/01': ['00.json'],
-        }
+    @patch('arthash.journals.journals.timestamp', autospec=True)
+    def test_overflow1(self, timestamp):
+        timestamp.return_value = TIMESTAMP2
 
-        isdir.side_effect = lambda f: not f.endswith('.json')
-        listdir.side_effect = directory.__getitem__
-        open.side_effect = mock_open(read_data=json.dumps(RECORD1 * 256))
-        timestamp.side_effect = lambda: TIMESTAMP2
+        contents = json.dumps(RECORD1 * 256)
+        self.fs.create_file('journals/index.html')
+        self.fs.create_file('journals/00/index.html')
+        self.fs.create_file('journals/01/index.html')
+        self.fs.create_file('journals/02/index.html')
+        self.fs.create_file('journals/02/00/index.html')
+        self.fs.create_file('journals/02/00/00/index.html')
+        self.fs.create_file('journals/02/00/01/index.html')
+        self.fs.create_file('journals/02/00/01/00.json', contents=contents)
 
         hf = journals.Journals('journals')
         self.assertEqual(hf.last, 'journals/02/00/01/00.json')
         self.assertEqual(hf.page, RECORD1 * 256)
 
         hf.add_hash(DATA_HASH2)
+
         self.assertEqual(hf.last, 'journals/02/00/01/01.json')
         self.assertEqual(hf.page, [[DATA_HASH2, TIMESTAMP2]])
-        self.assertEqual(get_writes(open), hf.page)
-        makedirs.assert_called_with('journals/02/00/01', exist_ok=True)
 
-    @patch.multiple('arthash.journals.sequence', autospec=True,
-                    isdir=DEFAULT, listdir=DEFAULT)
-    @patch.multiple('arthash.journals.journal_files', autospec=True,
-                    makedirs=DEFAULT, open=DEFAULT)
-    @patch.multiple('arthash.journals.journals', autospec=True,
-                    timestamp=DEFAULT)
-    def test_overflow2(self, timestamp, open, makedirs, listdir, isdir):
-        directory = {'journals': []}
+        actual_page = json.load(open('journals/02/00/01/01.json'))
+        self.assertEqual(actual_page, hf.page)
 
-        isdir.side_effect = lambda f: not f.endswith('.json')
-        listdir.side_effect = directory.__getitem__
-        open.side_effect = mock_open()
-        timestamp.side_effect = lambda: TIMESTAMP2
+    @patch('arthash.journals.journals.timestamp', autospec=True)
+    def test_overflow2(self, timestamp):
+        timestamp.return_value = TIMESTAMP2
+        self.fs.create_dir('journals')
 
         hf = journals.Journals('journals')
         self.assertEqual(hf.last, 'journals/00/00/00/00.json')
         self.assertEqual(hf.page, [])
 
         hf.add_hash(DATA_HASH2)
-        makedirs.assert_called_with('journals/00/00/00', exist_ok=True)
+
         self.assertEqual(hf.last, 'journals/00/00/00/00.json')
         self.assertEqual(hf.page, [[DATA_HASH2, TIMESTAMP2]])
-        self.assertEqual(get_writes(open), hf.page)
 
-
-def get_writes(open):
-    results = []
-    for name, args, kwds in open.side_effect.mock_calls:
-        if name.endswith('.write'):
-            data, = args
-            results.append(data)
-
-    return json.loads(''.join(results))
+        actual_page = json.load(open('journals/00/00/00/00.json'))
+        self.assertEqual(actual_page, hf.page)

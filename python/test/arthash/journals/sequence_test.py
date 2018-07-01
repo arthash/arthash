@@ -1,9 +1,12 @@
 import json, os, unittest
-from unittest.mock import mock_open, patch, DEFAULT
+from pyfakefs.fake_filesystem_unittest import TestCase
 from arthash.journals import sequence
 
 
-class JournalTest(unittest.TestCase):
+class JournalTest(TestCase):
+    def setUp(self):
+        self.setUpPyfakefs()
+
     def test_next_file(self):
         self.assertEqual(sequence.next_file('00/00/00/00.json'),
                          '00/00/00/01.json')
@@ -22,14 +25,12 @@ class JournalTest(unittest.TestCase):
         self.assertEqual(sequence.next_file('ff/ff/ff/ff.json'),
                          '100/00/00/00.json')
 
-    @patch.multiple('arthash.journals.sequence', autospec=True,
-                    isdir=DEFAULT, listdir=DEFAULT)
-    def test_last_file2(self, listdir, isdir):
-        directory = {
-            'journals': ['00', '01', '02', 'index.html'],
-            'journals/02': ['00.json', '01.json', 'index.html'],
-        }
-        isdir.side_effect = lambda f: not f.endswith('.json')
-        listdir.side_effect = directory.__getitem__
+    def test_last_file2(self):
+        self.fs.create_file('journals/index.html')
+        self.fs.create_file('journals/00/index.html')
+        self.fs.create_file('journals/01/index.html')
+        self.fs.create_file('journals/02/index.html')
+        self.fs.create_file('journals/02/00.json')
+        self.fs.create_file('journals/02/01.json')
 
         self.assertEqual(sequence.last_file('journals'), 'journals/02/01.json')

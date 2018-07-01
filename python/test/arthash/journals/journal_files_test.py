@@ -1,7 +1,6 @@
 import unittest
 from pyfakefs.fake_filesystem_unittest import TestCase
 from arthash.journals import journal_files
-from . journals_test import get_writes
 
 ONE_INDEX = '        <td><a href="00/index.html"><pre>00</pre></a></td>'
 JSON_ONE = '        <td><a href="00.json"><pre>00</pre></a></td>'

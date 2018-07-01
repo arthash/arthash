@@ -1,12 +1,10 @@
 import os
-from os import listdir
-from os.path import isdir
 from .. util import files
 
 
 def last_file(f):
-    while isdir(f):
-        dfiles = [f for f in listdir(f) if files.is_journal_file(f)]
+    while os.path.isdir(f):
+        dfiles = [f for f in os.listdir(f) if files.is_journal_file(f)]
         if not dfiles:
             return
         f = os.path.join(f, sorted(dfiles)[-1])
