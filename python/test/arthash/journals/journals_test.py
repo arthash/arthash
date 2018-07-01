@@ -19,33 +19,37 @@ class JournalsTest(TestCase):
     def setUp(self):
         self.setUpPyfakefs()
 
-    @patch('arthash.journals.journals.timestamp', autospec=True)
-    def test_journals(self, timestamp):
-        timestamp.return_value = TIMESTAMP2
+    def run_test(self, last1, page1, last2, page2):
+        with patch('arthash.journals.journals.timestamp') as timestamp:
+            timestamp.return_value = TIMESTAMP2
 
-        contents = json.dumps(RECORD1)
+            if page1:
+                self.fs.create_file(last1, contents=json.dumps(page1))
+            hf = journals.Journals('journals')
+
+            self.assertEqual(hf.last, last1)
+            self.assertEqual(hf.page, page1)
+            if page1:
+                self.assertEqual(hf.page, json.load(open(hf.last)))
+
+            hf.add_hash(DATA_HASH2)
+
+            self.assertEqual(hf.last, last2)
+            self.assertEqual(hf.page, page2)
+            self.assertEqual(hf.page, json.load(open(hf.last)))
+
+    def test_journals(self):
         self.fs.create_file('journals/index.html')
         self.fs.create_file('journals/00/index.html')
         self.fs.create_file('journals/01/index.html')
         self.fs.create_file('journals/02/index.html')
         self.fs.create_file('journals/02/00.json')
-        self.fs.create_file('journals/02/01.json', contents=contents)
 
-        hf = journals.Journals('journals')
-        self.assertEqual(hf.last, 'journals/02/01.json')
-        self.assertEqual(hf.page, RECORD1)
+        self.run_test(
+            'journals/02/01.json', RECORD1,
+            'journals/02/01.json', RECORD1 + RECORD2)
 
-        hf.add_hash(DATA_HASH2)
-
-        self.assertEqual(hf.page, RECORD1 + RECORD2)
-        actual_page = json.load(open('journals/02/01.json'))
-        self.assertEqual(actual_page, hf.page)
-
-    @patch('arthash.journals.journals.timestamp', autospec=True)
-    def test_overflow1(self, timestamp):
-        timestamp.return_value = TIMESTAMP2
-
-        contents = json.dumps(RECORD1 * 256)
+    def test_overflow1(self):
         self.fs.create_file('journals/index.html')
         self.fs.create_file('journals/00/index.html')
         self.fs.create_file('journals/01/index.html')
@@ -53,33 +57,14 @@ class JournalsTest(TestCase):
         self.fs.create_file('journals/02/00/index.html')
         self.fs.create_file('journals/02/00/00/index.html')
         self.fs.create_file('journals/02/00/01/index.html')
-        self.fs.create_file('journals/02/00/01/00.json', contents=contents)
 
-        hf = journals.Journals('journals')
-        self.assertEqual(hf.last, 'journals/02/00/01/00.json')
-        self.assertEqual(hf.page, RECORD1 * 256)
+        self.run_test(
+            'journals/02/00/01/00.json', RECORD1 * 256,
+            'journals/02/00/01/01.json', [[DATA_HASH2, TIMESTAMP2]])
 
-        hf.add_hash(DATA_HASH2)
-
-        self.assertEqual(hf.last, 'journals/02/00/01/01.json')
-        self.assertEqual(hf.page, [[DATA_HASH2, TIMESTAMP2]])
-
-        actual_page = json.load(open('journals/02/00/01/01.json'))
-        self.assertEqual(actual_page, hf.page)
-
-    @patch('arthash.journals.journals.timestamp', autospec=True)
-    def test_overflow2(self, timestamp):
-        timestamp.return_value = TIMESTAMP2
+    def test_initial(self):
         self.fs.create_dir('journals')
 
-        hf = journals.Journals('journals')
-        self.assertEqual(hf.last, 'journals/00/00/00/00.json')
-        self.assertEqual(hf.page, [])
-
-        hf.add_hash(DATA_HASH2)
-
-        self.assertEqual(hf.last, 'journals/00/00/00/00.json')
-        self.assertEqual(hf.page, [[DATA_HASH2, TIMESTAMP2]])
-
-        actual_page = json.load(open('journals/00/00/00/00.json'))
-        self.assertEqual(actual_page, hf.page)
+        self.run_test(
+            'journals/00/00/00/00.json', [],
+            'journals/00/00/00/00.json', [[DATA_HASH2, TIMESTAMP2]])
