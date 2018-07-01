@@ -6,9 +6,9 @@ python:
 - '3.6'
 
 install:
-- pip install -r requirements/arthash.txt
-- pip install -r requirements/arthashd.txt
-- pip install -r requirements/tests.txt
+- pip install -r requirements/arthash_requirements.txt
+- pip install -r requirements/arthashd_requirements.txt
+- pip install -r requirements/test_requirements.txt
 
 script:
 - flake8
