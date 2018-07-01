@@ -1,10 +1,5 @@
-import unittest
 from pyfakefs.fake_filesystem_unittest import TestCase
-from arthash.journals import journal_files
-
-ONE_INDEX = '        <td><a href="00/index.html"><pre>00</pre></a></td>'
-JSON_ONE = '        <td><a href="00.json"><pre>00</pre></a></td>'
-JSON_TWO = '        <td><a href="01.json"><pre>01</pre></a></td>'
+from arthash.journals import link_lines
 
 
 class LinkLinesTest(TestCase):
@@ -13,25 +8,20 @@ class LinkLinesTest(TestCase):
 
     def test_branch_single(self):
         self.fs.create_file('journals/00')
-        actual = '\n'.join(journal_files.link_lines('journals'))
+        actual = '\n'.join(link_lines.link_lines('journals'))
         self.assertEqual(actual, SINGLE.strip())
 
     def test_branch_many(self):
         for i in range(17):
             self.fs.create_file('journals/%02x' % i)
-        actual = '\n'.join(journal_files.link_lines('journals'))
+        actual = '\n'.join(link_lines.link_lines('journals'))
         self.assertEqual(actual, MANY.strip())
 
     def test_json_double(self):
         self.fs.create_file('journals/00.json')
         self.fs.create_file('journals/01.json')
-        actual = '\n'.join(journal_files.link_lines('journals'))
+        actual = '\n'.join(link_lines.link_lines('journals'))
         self.assertEqual(actual, DOUBLE.strip())
-
-
-class WriteIndexTest(unittest.TestCase):
-    def test_write(self):
-        pass
 
 
 SINGLE = """
