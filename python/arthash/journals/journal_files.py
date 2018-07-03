@@ -19,6 +19,7 @@ def read(journal_file):
 
 
 def _write_indexes(journal_file):
+    print('Created', journal_file)
     directory = journal_file
     for title in TITLES:
         directory = os.path.dirname(directory)

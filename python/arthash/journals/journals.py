@@ -5,6 +5,7 @@ from .. util import files
 
 class Journals:
     def __init__(self, root, page_size=256, levels=4):
+        os.makedirs(root, exist_ok=True)
         self.root = root
         self.page_size = page_size
         self.levels = levels
