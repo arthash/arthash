@@ -1,26 +1,26 @@
 from pyfakefs.fake_filesystem_unittest import TestCase
-from arthash.journals import link_lines
+from arthash.journals import index_files
 
 
-class LinkLinesTest(TestCase):
+class IndexFilesTest(TestCase):
     def setUp(self):
         self.setUpPyfakefs()
 
     def test_branch_single(self):
         self.fs.create_file('journals/00')
-        actual = '\n'.join(link_lines.link_lines('journals'))
+        actual = '\n'.join(index_files.link_lines('journals'))
         self.assertEqual(actual, SINGLE.strip())
 
     def test_branch_many(self):
         for i in range(17):
             self.fs.create_file('journals/%02x' % i)
-        actual = '\n'.join(link_lines.link_lines('journals'))
+        actual = '\n'.join(index_files.link_lines('journals'))
         self.assertEqual(actual, MANY.strip())
 
     def test_json_double(self):
         self.fs.create_file('journals/00.json')
         self.fs.create_file('journals/01.json')
-        actual = '\n'.join(link_lines.link_lines('journals'))
+        actual = '\n'.join(index_files.link_lines('journals'))
         self.assertEqual(actual, DOUBLE.strip())
 
 

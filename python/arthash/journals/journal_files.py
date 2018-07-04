@@ -1,5 +1,5 @@
 import json, os
-from . import link_lines
+from . import index_files
 
 
 def write(journal_file, page):
@@ -23,7 +23,7 @@ def _write_indexes(journal_file):
     directory = journal_file
     for title in TITLES:
         directory = os.path.dirname(directory)
-        body = '\n'.join(link_lines.link_lines(directory))
+        body = '\n'.join(index_files.link_lines(directory))
         index_filename = os.path.join(directory, 'index.html')
         with open(index_filename, 'w') as fp:
             fp.write(DOC_TEMPLATE.format(title=title, body=body))
