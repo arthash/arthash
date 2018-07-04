@@ -26,7 +26,7 @@ def hasher(document, chunksize):
     h.update(os.path.basename(document).encode())
 
     if os.path.isdir(document):
-        for filename in sorted(_walk(document)):
+        for filename in walk(document):
             h.update(filename.encode())
             hash_file(os.path.join(document, filename))
     else:
@@ -35,15 +35,18 @@ def hasher(document, chunksize):
     return h.hexdigest()
 
 
-def _walk(document):
+def walk(document):
+    results = []
     for dirpath, dirnames, filenames in os.walk(document):
-        dirnames[:] = _exclude(dirnames)
-        for f in _exclude(filenames):
+        dirnames[:] = exclude(dirnames)
+        for f in exclude(filenames):
             path = os.path.join(dirpath, f)
-            yield os.path.relpath(path, document)
+            results.append(os.path.relpath(path, document))
+
+    return results.sort() or results
 
 
-def _exclude(files):
+def exclude(files):
     for f in files:
         if not any(f.startswith(p) for p in EXCLUDED_PREFIXES):
             yield f

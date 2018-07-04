@@ -28,7 +28,6 @@ def link_lines(directory):
 
 
 def write_indexes(journal_file, levels):
-    print('Created', journal_file)
     directory = journal_file
     for level in range(levels):
         title = TITLE % level
