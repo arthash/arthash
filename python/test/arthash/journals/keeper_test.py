@@ -1,7 +1,7 @@
 import json, os, unittest
 from unittest.mock import patch
 from pyfakefs.fake_filesystem_unittest import TestCase
-from arthash.journals import journals
+from arthash.journals import keeper
 
 BASE = os.path.dirname(__file__)
 
@@ -15,17 +15,17 @@ RECORD1 = [[DATA_HASH1, TIMESTAMP1]]
 RECORD2 = [[DATA_HASH2, TIMESTAMP2]]
 
 
-class JournalsTest(TestCase):
+class KeeperTest(TestCase):
     def setUp(self):
         self.setUpPyfakefs()
 
     def run_test(self, last1, page1, last2, page2):
-        with patch('arthash.journals.journals.timestamp') as timestamp:
+        with patch('arthash.journals.keeper.timestamp') as timestamp:
             timestamp.return_value = TIMESTAMP2
 
             if page1:
                 self.fs.create_file(last1, contents=json.dumps(page1))
-            hf = journals.Journals('journals')
+            hf = keeper.Keeper('journals')
 
             self.assertEqual(hf.last, last1)
             self.assertEqual(hf.page, page1)
@@ -77,7 +77,7 @@ class NextTest(TestCase):
     def test_next_file(self):
         self.fs.create_dir('journals')
         root = 'journals'
-        hs = journals.Journals(root)
+        hs = keeper.Keeper(root)
 
         def test(before, after):
             b, a = os.path.join(root, before), os.path.join(root, after)

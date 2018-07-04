@@ -3,7 +3,10 @@ from . import journal_files
 from .. util import files
 
 
-class Journals:
+class Keeper:
+    """
+    Organizes all the JSON journal files and updates the HTML index files.
+    """
     def __init__(self, root, page_size=256, levels=4):
         os.makedirs(root, exist_ok=True)
         self.root = root
@@ -45,9 +48,9 @@ class Journals:
 
         numbers = [int(i, 16) for i in segments]
 
-        for i in reversed(range(4)):
+        for i in reversed(range(self.levels)):
             numbers[i] += 1
-            if numbers[i] <= 255:
+            if numbers[i] < self.page_size:
                 break
             if i:
                 numbers[i] = 0

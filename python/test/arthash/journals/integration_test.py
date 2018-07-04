@@ -1,6 +1,6 @@
 import json, os, random, shutil, sys
 from pyfakefs.fake_filesystem_unittest import TestCase
-from arthash.journals import journals
+from arthash.journals import keeper
 
 
 class IntegrationTest(TestCase):
@@ -8,8 +8,7 @@ class IntegrationTest(TestCase):
         self.setUpPyfakefs()
 
     def test_integration(self):
-        self.fs.create_dir('journals')
-        hf = journals.Journals('journals')
+        hf = keeper.Keeper('journals')
         return hf
 
 
@@ -22,7 +21,7 @@ def _run_integration_test(directory, count, remove):
     if remove and os.path.exists(directory):
         shutil.rmtree(directory)
 
-    hf = journals.Journals(directory)
+    hf = keeper.Keeper(directory)
     for i in range(count):
         hf.add_hash(_random_hash())
 
