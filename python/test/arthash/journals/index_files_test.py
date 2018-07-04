@@ -11,6 +11,12 @@ class IndexFilesTest(TestCase):
         actual = '\n'.join(index_files.link_lines('journals'))
         self.assertEqual(actual, SINGLE.strip())
 
+    def test_branch_single_with_index(self):
+        self.fs.create_file('journals/00')
+        self.fs.create_file('journals/index.html')
+        actual = '\n'.join(index_files.link_lines('journals'))
+        self.assertEqual(actual, SINGLE.strip())
+
     def test_branch_many(self):
         for i in range(17):
             self.fs.create_file('journals/%02x' % i)

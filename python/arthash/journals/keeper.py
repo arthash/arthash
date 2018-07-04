@@ -39,7 +39,7 @@ class Keeper:
             json.dump(self.page, fp, indent=2)
 
         if not exists:
-            index_files.write_indexes(self.last)
+            index_files.write_indexes(self.last, self.org.levels)
 
     def _set_last(self, last):
         self.last = last

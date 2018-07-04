@@ -1,6 +1,6 @@
 import json, os, random, shutil, sys
 from pyfakefs.fake_filesystem_unittest import TestCase
-from arthash.journals import keeper
+from arthash.journals import keeper, organization
 
 
 class IntegrationTest(TestCase):
@@ -16,21 +16,20 @@ def _random_hash():
     return ''.join(hex(random.randrange(16)) for i in range(64))
 
 
-def _run_integration_test(directory, count, remove):
+def run_integration_test(
+        directory, count=256 * 256 + 1, remove=False, page_size=256, levels=4):
     random.seed(0)
-    if remove and os.path.exists(directory):
-        shutil.rmtree(directory)
 
-    hf = keeper.Keeper(directory)
-    for i in range(count):
+    if os.path.exists(directory):
+        if remove is True or remove and remove.lower().startswith('t'):
+            shutil.rmtree(directory)
+
+    org = organization.Organization(int(page_size), int(levels))
+
+    hf = keeper.Keeper(directory, org)
+    for i in range(int(count)):
         hf.add_hash(_random_hash())
 
 
-def _main(directory, count=256 * 256 + 1, remove=False or 'true'):
-    remove = remove and remove.lower().startswith('t')
-    os.makedirs(directory, exist_ok=True)
-    _run_integration_test(directory, int(count), remove)
-
-
 if __name__ == '__main__':
-    _main(*sys.argv[1:])
+    run_integration_test(*sys.argv[1:])
