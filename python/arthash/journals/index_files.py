@@ -1,7 +1,5 @@
 import os
 
-TD_TEMPLATE = '        <td><a href="{filename}"><pre>{root}</pre></a></td>'
-
 
 def link_lines(directory):
     def linkable(f):
@@ -28,19 +26,24 @@ def link_lines(directory):
 
 
 def write_indexes(journal_file, levels):
-    directory = journal_file
+    d = journal_file
+
     for level in range(levels):
-        title = TITLE % level
-        directory = os.path.dirname(directory)
-        body = '\n'.join(link_lines(directory))
-        index_filename = os.path.join(directory, 'index.html')
-        with open(index_filename, 'w') as fp:
-            fp.write(DOC_TEMPLATE.format(**locals()))
+        d = os.path.dirname(d)
+        body = '\n'.join(link_lines(d))
+
+        filename = os.path.join(d, 'index.html')
+        with open(filename, 'w') as fp:
+            page = PAGE_TEMPLATE.format(level=level, body=body)
+            fp.write(page)
 
 
 TITLE = 'artHash index page level %d'
 
-DOC_TEMPLATE = """<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+TD_TEMPLATE = '        <td><a href="{filename}"><pre>{root}</pre></a></td>'
+
+PAGE_TEMPLATE = """\
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html><head>
 <title>artHash index page {level}</title>
 </head>
