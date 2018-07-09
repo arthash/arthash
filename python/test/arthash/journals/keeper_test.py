@@ -32,7 +32,7 @@ class KeeperTest(TestCase):
             if page1:
                 self.assertEqual(hf.page, json.load(open(hf.last)))
 
-            hf.add_hash(DATA_HASH2)
+            hf.add_record(DATA_HASH2)
 
             self.assertEqual(hf.last, last2)
             self.assertEqual(hf.page, page2)

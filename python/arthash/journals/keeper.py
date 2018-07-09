@@ -23,13 +23,13 @@ class Keeper:
             first = os.path.join(self.root, parts + '.json')
             self._set_last(first)
 
-    def add_hash(self, arthash):
+    def add_record(self, *args):
         if len(self.page) >= self.org.page_size:
             parts = os.path.relpath(self.last, self.root)
             next_parts = self.org.next_file(parts)
             self._set_last(os.path.join(self.root, next_parts))
 
-        self.page.append([arthash, timestamp()])
+        self.page.append(list(args) + [timestamp()])
 
         exists = os.path.exists(self.last)
         if not exists:

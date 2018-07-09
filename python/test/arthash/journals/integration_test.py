@@ -57,7 +57,7 @@ class IntegrationDesc:
             timestamp.side_effect = self.timestamp
 
             for i in range(int(self.count)):
-                hf.add_hash(self.random_hash())
+                hf.add_record(self.random_hash())
 
     def random_hash(self):
         return ''.join(self.HEX[random.randrange(16)] for i in range(64))
