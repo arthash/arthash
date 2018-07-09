@@ -22,4 +22,4 @@ def public_private_key():
         crypto_serialization.PrivateFormat.PKCS8,
         crypto_serialization.NoEncryption())
 
-    return public, private
+    return public.decode(), private.decode()

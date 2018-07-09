@@ -1,10 +1,13 @@
 import os, webbrowser
 from .. import files
-from .. util import data_file
+from .. util import data_file, public_private_key
 
 
 def arthashing(args):
     arthash = files.hash_file(args.document)
+
+    public, private = public_private_key.public_private_key()
+
     url = '%s:%s/put/%s' % (args.server, args.port, arthash)
     data = data_file.get(url)
 

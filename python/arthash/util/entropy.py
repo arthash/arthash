@@ -5,17 +5,7 @@ Attempt to detect spam hashes.
 
 """
 
-import collections, math, hashlib, gzip
-
-HASH_LENGTH = 64
-HASH_CHARS = frozenset('0123456789abcdef')
-MINIMUM_ENTROPY = 3
-ENTROPY_ERROR = 'Entropy was less than %s' % MINIMUM_ENTROPY
-BAD_HASH_ERROR = 'Bad hash'
-
-
-def possible_hash(s):
-    return len(s) == HASH_LENGTH and all(c in HASH_CHARS for c in s)
+import collections, math, hashlib
 
 
 def entropy(string):
@@ -63,15 +53,3 @@ def generate_hashes(count, value=b'x'):
         h.update(value)
 
     return min_count, max_count
-
-
-def check_enough_entropy(s):
-    e = entropy(s)
-    if e < MINIMUM_ENTROPY:
-        raise ValueError(ENTROPY_ERROR, e, s)
-
-
-def check(s):
-    if not possible_hash(s):
-        raise ValueError(BAD_HASH_ERROR, s)
-    check_enough_entropy(s)
