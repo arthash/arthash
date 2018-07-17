@@ -1,0 +1,6 @@
+setuptools>=18.5
+cryptography
+flask
+requests
+
+# python-daemon
