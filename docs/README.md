@@ -2,43 +2,46 @@
 
 There are two:
 
-* a server named `arthashd`
-* a client named `arthasher`
+* a server named `artHashD`
+* a client named `artHashEr`
 
-## `arthashd`
+## `artHashD`
 
-The `arthashd` server is a *nix daemon written in Python with a little bit of
+The `artHashD` server is a *nix daemon written in Python with a little bit of
 `bash` glue code.
 
-The `arthashd` server provides just one service: _arthash journaling_.
+The `artHashD` server provides just one service: _arthash journaling_.
 
-`arthashd` is sent a hash by a client, writes that hash and a timestamp into a
-JSON file that's called a _journal_, and sends back the URL of the journal page.
+`artHashD` is sent a hash by a client, writes that hash into a JSON file that's
+called a _journal_, and sends back the URL of the journal page.
 
 As a side effect, the server requests that archive.org archives the journal
 page - this must be performed in a separate thread and rate limited.
 
-## `arthasher`
+## `artHashEr`
 
- The `arthasher` client is a cross-platform command line application written in
+ The `artHashEr` client is a cross-platform command line application written in
 Python. On some platforms like MacOS there will also be a drag-and-drop
 front-end.
 
-The `arthasher` client provides two services: _arthashing_,
+The `artHashEr` client provides two services: _arthashing_,
 and _arthash certificate verification_.
 
 ## Arthashing
 
-Calling `arthasher` with a single file or directory (either from the command
+Calling `artHashEr` with a single file or directory (either from the command
 line, or through drag-and-drop) _arthashes_ that file or directory:
 
-1. Arthashing starts with an empty hash and then hashes a sequence of file names
-and file contents into it to get a final _arthash_,  64 hex digits from 0-9, a-f.
+1. Arthashing starts by generating a public/private key pair.
 
-2. The arthash is then sent anonymously to an `arthashd` server, which responds
+2. Then it produces the hash digest: starting with an empty hash, it then hashes
+a sequence of file names and file contents into it to get a final _arthash_, 64
+hex digits from 0-9, a-f.
+
+2. The arthash is then sent anonymously to an `artHashD` server, which responds
 with a journal URL.
 
-3. The `arthasher` client takes the arthash, the journal URL and loads the
+3. The `artHashEr` client takes the arthash, the journal URL and loads the
 _certificate generator page_ in a browser.
 
 4. The _certificate generator page_ is prefilled with the arthash and journal
@@ -58,7 +61,7 @@ it a secret forever.
 
 ## Arthash certificate verification
 
-Calling `arthasher` with two files or directories (either from the command
+Calling `artHashEr` with two files or directories (either from the command
 line, or through drag-and-drop) performs arthash certificate verification.
 
 Exactly one of the two files or directories must be an arthash certificate file.
