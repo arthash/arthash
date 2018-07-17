@@ -1,6 +1,4 @@
-from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
-import os, sys
+import importlib, os, setuptools, subprocess, sys
 
 NAME = 'arthash'
 OWNER = 'arthash'
@@ -16,7 +14,14 @@ INSTALL_REQUIRES = open('requirements.txt').read().splitlines()
 TESTS_REQUIRE = open('test_requirements.txt').read().splitlines()
 
 
-setup(
+if setuptools.version.__version__ < '18.5':
+    # Work around https://github.com/pyca/cryptography/issues/4352
+    print('Upgrading setuptools from version', setuptools.version.__version__)
+    subprocess.check_call(('pip', 'install', '-U', 'setuptools'))
+    importlib.reload(subprocess)
+    print('Setuptools is now version', setuptools.version.__version__)
+
+setuptools.setup(
     name='arthash',
     version=VERSION,
     description='arthash - hash all the things',
@@ -25,7 +30,7 @@ setup(
     url=URL,
     download_url=DOWNLOAD_URL,
     license='MIT',
-    packages=find_packages(
+    packages=setuptools.find_packages(
         include=['python'],
         exclude=['python/test']),
     classifiers=[
