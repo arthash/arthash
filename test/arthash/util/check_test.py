@@ -1,6 +1,6 @@
 import hashlib, unittest
 
-from arthash.util import check, public_private_key
+from arthash.util import check, crypto
 
 
 class CheckTest(unittest.TestCase):
@@ -26,5 +26,5 @@ class CheckTest(unittest.TestCase):
 
     def test_RSA_public_key(self):
         for i in range(4):
-            public, _ = public_private_key.public_private_key()
+            public, _ = crypto.public_private_key()
             check.RSAPublicKey.check(public)
