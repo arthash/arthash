@@ -54,4 +54,5 @@ setuptools.setup(
     install_requires=INSTALL_REQUIRES,
     keywords=['hashing'],
     include_package_data=True,
+    scripts=['scripts/artHashEr', 'scripts/artHashD'],
 )
