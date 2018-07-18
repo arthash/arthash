@@ -2,9 +2,8 @@ import importlib, os, setuptools, subprocess, sys
 
 NAME = 'arthash'
 OWNER = 'arthash'
-SOURCE = 'python'
 
-VERSION_FILE = os.path.join(os.path.dirname(__file__), SOURCE, NAME, 'VERSION')
+VERSION_FILE = os.path.join(os.path.dirname(__file__), NAME, 'VERSION')
 VERSION = open(VERSION_FILE).read().strip()
 
 URL = 'http://github.com/{OWNER}/{NAME}'.format(**locals())
@@ -13,13 +12,32 @@ DOWNLOAD_URL = '{URL}/archive/{VERSION}.tar.gz'.format(**locals())
 INSTALL_REQUIRES = open('requirements.txt').read().splitlines()
 TESTS_REQUIRE = open('test_requirements.txt').read().splitlines()
 
+PACKAGES = setuptools.find_packages(exclude=['test'])
 
-if setuptools.version.__version__ < '18.5':
-    # Work around https://github.com/pyca/cryptography/issues/4352
-    print('Upgrading setuptools from version', setuptools.version.__version__)
-    subprocess.check_call(('pip', 'install', '-U', 'setuptools'))
-    importlib.reload(subprocess)
-    print('Setuptools is now version', setuptools.version.__version__)
+CLASSIFIERS = [
+    'Development Status :: 5 - Production/Stable',
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3.4',
+    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6',
+]
+
+SETUPTOOLS_VERSION = '18.5'
+SETUPTOOLS_ERROR = """
+
+Your version of setuptools is %s but this needs version %s or greater.
+
+Please type:
+
+    pip install -U setuptools pip
+
+and then try again.
+"""
+
+
+sversion = setuptools.version.__version__
+if sversion < SETUPTOOLS_VERSION:
+    raise ValueError(SETUPTOOLS_ERROR % (sversion, SETUPTOOLS_VERSION))
 
 setuptools.setup(
     name='arthash',
@@ -30,16 +48,8 @@ setuptools.setup(
     url=URL,
     download_url=DOWNLOAD_URL,
     license='MIT',
-    packages=setuptools.find_packages(
-        include=['python'],
-        exclude=['python/test']),
-    classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-    ],
+    packages=PACKAGES,
+    classifiers=CLASSIFIERS,
     tests_require=TESTS_REQUIRE,
     install_requires=INSTALL_REQUIRES,
     keywords=['hashing'],
