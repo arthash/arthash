@@ -18,14 +18,14 @@ def make_private_key():
         key_size=KEY_SIZE)
 
 
-def public_key_to_string(private_key):
+def public_key_string(private_key):
     return private_key.public_key().public_bytes(
         serialization.Encoding.OpenSSH,
         serialization.PublicFormat.OpenSSH,
     ).decode()
 
 
-def private_key_to_string(private_key):
+def private_key_string(private_key):
     return private_key.private_bytes(
         serialization.Encoding.PEM,
         serialization.PrivateFormat.TraditionalOpenSSL,
@@ -34,8 +34,8 @@ def private_key_to_string(private_key):
 
 def public_private_key():
     private_key = make_private_key()
-    public = public_key_to_string(private_key)
-    private = private_key_to_string(private_key)
+    public = public_key_string(private_key)
+    private = private_key_string(private_key)
     return public, private
 
 

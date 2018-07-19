@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from arthash.arthasher import main
+from arthash.arthasher import arthasher
 
 if __name__ == '__main__':
-    main.main()
+    arthasher.arthasher()

@@ -1,6 +1,5 @@
 import json, requests
-from .. import files
-from .. util import data_file
+from .. util import data_file, files
 from . import arguments
 
 

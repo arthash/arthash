@@ -3,9 +3,9 @@ import argparse, sys
 from .. util import constants, files
 
 
-def arguments(argv=sys.argv):
+def arguments(argv=sys.argv[1:]):
     parser = _make_parser()
-    args = parser.parse(argv)
+    args = parser.parse_args(argv)
     _fix_document_and_certificate(args)
     return args
 
@@ -30,14 +30,14 @@ def _fix_document_and_certificate(args):
         args.document, args.certificate = cert, doc
 
 
-def _make_parser(argv):
-    parser = argparse.ArgumentParser(argv)
+def _make_parser():
+    parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        'document', nargs='1', help='The document to arthash')
+        'document', help='The document to arthash')
 
     parser.add_argument(
-        'certificate', nargs='+', help='An optional arthash certificate',
+        'certificate', nargs='?', help='An optional arthash certificate',
         default=None)
 
     parser.add_argument(

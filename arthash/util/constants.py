@@ -5,6 +5,7 @@ DEBUG_ADDRESS = 'http://localhost'
 ADDRESS = DEBUG_ADDRESS if DEBUG else FINAL_ADDRESS
 
 PORT = 7887
+PUT_URL = '/put'
 
 """
 The size of file chunks we read and hash.  The arthash computation is
