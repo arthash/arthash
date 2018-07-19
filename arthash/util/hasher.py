@@ -16,7 +16,8 @@ def hasher(document, chunksize):
 
     def hash_file(filename):
         fh = HASH_CLASS()
-        with open(os.path.join(filename), 'rb') as f:
+        # TODO: this needs to be entirely de-Merklized
+        with open(filename, 'rb') as f:
             chunk = f.read(chunksize)
             while chunk:
                 fh.update(chunk)

@@ -2,7 +2,7 @@ import json, logging, os, requests, webbrowser
 from .. util import constants, crypto, files
 
 log = logging.getLogger(__name__)
-RESULT_KEYS = set(('timestamp', 'record_hash', 'journal_urls'))
+RESPONSE_KEYS = set(('timestamp', 'record_hash', 'journal_urls'))
 
 
 def signed_hash(document):
@@ -16,26 +16,11 @@ def signed_hash(document):
     return private_key, data
 
 
-def signed_hash(document):
-    private_key = crypto.make_private_key()
-    art_hash = files.hash_document(document)
-    signature = crypto.sign(private_key, art_hash)
-    public_key = crypto.public_key_string(private_key)
-
-    data = {
-        'art_hash': art_hash,
-        'public_key': public_key,
-        'signature': signature,
-    }
-
-    return private_key, data
-
-
 def distribute_to_server(args, data):
     url = '%s:%s%s' % (args.server, args.port, constants.PUT_URL)
     response = requests.put(url, data=data).json()
 
-    if set(response) != RESULT_KEYS:
+    if set(response) != RESPONSE_KEYS:
         raise ValueError('Do not understand keys in ' + str(response))
 
     return response

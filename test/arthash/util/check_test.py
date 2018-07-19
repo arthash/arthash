@@ -8,14 +8,14 @@ class CheckTest(unittest.TestCase):
         h = hashlib.sha256()
 
         for i in range(100):
-            check.SHA256.check(h.hexdigest())
+            check.SHA256(h.hexdigest())
             h.update(b'x')
 
         def check_repetitive(size):
             # Make a string by repeating a segment of CHARS
             mult = 1 + 64 // size
-            segment = check.SHA256.CHARS[:size] * mult
-            check.SHA256.check(segment[:64])
+            segment = check.SHA256.chars[:size] * mult
+            check.SHA256(segment[:64])
 
         for i in range(1, 8):
             with self.assertRaises(ValueError):
@@ -27,4 +27,4 @@ class CheckTest(unittest.TestCase):
     def test_RSA_public_key(self):
         for i in range(4):
             public, _ = crypto.public_private_key()
-            check.RSAPublicKey.check(public)
+            check.RSAPublicKey(public)

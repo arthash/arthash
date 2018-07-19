@@ -6,6 +6,7 @@ ADDRESS = DEBUG_ADDRESS if DEBUG else FINAL_ADDRESS
 
 PORT = 7887
 PUT_URL = '/put'
+JOURNAL_PATH = 'journal'
 
 """
 The size of file chunks we read and hash.  The arthash computation is

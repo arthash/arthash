@@ -58,12 +58,11 @@ def sign(private_key, hexdigest):
     return to_hex(private_key.sign(digest, pad, prehashed))
 
 
-def verify(private_key, hexdigest, signature):
+def verify(public_key, hexdigest, signature):
     sig = bytes.fromhex(signature)
     digest = bytes.fromhex(hexdigest)
     pad = _make_padding()
     prehashed = utils.Prehashed(hashes.SHA256())
-    public_key = private_key.public_key()
 
     return public_key.verify(sig, digest, pad, prehashed)
 
