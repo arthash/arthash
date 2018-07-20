@@ -1,41 +1,55 @@
 import collections, datetime, os
 from . import server
-from .. util import check, hasher
 from .. journals import keeper
+from .. util import check, hasher
 
 
 class RecordKeeper(keeper.Keeper):
     def _get_record(self, data):
-        return data
-
-    def receive(self, message):
-        record = collections.OrderedDict(sorted(message.items()))
+        record = collections.OrderedDict(sorted(data.items()))
         assert hasher.KEYS == tuple(record)
-        self.add_record(record)
+        return record
 
+    def add_record(self, **data):
+        super().add_record(data)
+
+    def url(self):
         return os.path.relpath(self.last, self.root)
 
 
 class RequestHandler:
     def __init__(self, url_prefixes, root, organization=None):
-        self.record_hash = ''
-        self.url_prefixes = url_prefixes
         self.keeper = RecordKeeper(root, organization)
+        self.url_prefixes = url_prefixes
 
-    def receive(self, message):
-        check.check_request(**message)
+    def receive(self, art_hash, public_key, signature):
+        check.SHA256(art_hash)
+        check.RSAPublicKey(public_key)
+        check.RSASignature(signature)
 
-        message['timestamp'] = keeper.timestamp()
-        message['record_hash'] = self.record_hash
+        timestamp = keeper.timestamp()
+        if self.keeper.page:
+            old_record_hash = self.keeper.page[-1]['record_hash']
+        else:
+            old_record_hash = ''
 
-        self.record_hash = hasher.record_hash(**message)
-        message['record_hash'] = self.record_hash
+        new_record_hash = hasher.record_hash(
+            art_hash=art_hash,
+            record_hash=old_record_hash,
+            signature=signature,
+            timestamp=timestamp)
 
-        url_base = self.keeper.receive(message)
-        urls = [p + url_base for p in self.url_prefixes]
+        self.keeper.add_record(
+            art_hash=art_hash,
+            record_hash=new_record_hash,
+            signature=signature,
+            timestamp=timestamp)
+
+        url = self.keeper.url()
+        urls = [p + url for p in self.url_prefixes]
 
         return {
-            'record_hash': message['record_hash'],
-            'timestamp': message['timestamp'],
+            'record_hash': new_record_hash,
+            'timestamp': timestamp,
             'urls': urls,
         }
