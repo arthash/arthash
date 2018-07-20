@@ -12,28 +12,30 @@ EXCLUDED_PREFIXES = '.'
 
 
 def hasher(document, chunksize):
-    h = HASH_CLASS()
+    digest = HASH_CLASS()
 
     def hash_file(filename):
         fh = HASH_CLASS()
+
         # TODO: this needs to be entirely de-Merklized
         with open(filename, 'rb') as f:
             chunk = f.read(chunksize)
             while chunk:
                 fh.update(chunk)
                 chunk = f.read(chunksize)
-        h.update(fh.hexdigest().encode())
+        digest.update(fh.hexdigest().encode())
 
-    h.update(os.path.basename(document).encode())
+    digest.update(os.path.basename(document).encode())
 
     if os.path.isdir(document):
         for filename in walk(document):
-            h.update(filename.encode())
-            hash_file(os.path.join(document, filename))
+            digest.update(filename.encode())
+            absolute_filename = os.path.join(document, filename)
+            hash_file(absolute_filename)
     else:
         hash_file(document)
 
-    return h.hexdigest()
+    return digest.hexdigest()
 
 
 def walk(document):
