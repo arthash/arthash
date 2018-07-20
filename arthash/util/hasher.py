@@ -12,24 +12,27 @@ EXCLUDED_PREFIXES = '.'
 
 
 def hasher(document, chunksize):
+    def file_blocks(filename):
+        with open(filename, 'rb') as fp:
+            while True:
+                buf = fp.read(chunksize)
+                if not buf:
+                    return
+                yield buf
+
+    def all_blocks():
+        yield os.path.basename(document).encode()
+
+        if os.path.isdir(document):
+            for filename in walk(document):
+                yield filename.encode()
+                yield from file_blocks(os.path.join(document, filename))
+        else:
+            yield from file_blocks(document)
+
     digest = HASH_CLASS()
-
-    def hash_file(filename):
-        with open(filename, 'rb') as f:
-            chunk = f.read(chunksize)
-            while chunk:
-                digest.update(chunk)
-                chunk = f.read(chunksize)
-
-    digest.update(os.path.basename(document).encode())
-
-    if os.path.isdir(document):
-        for filename in walk(document):
-            digest.update(filename.encode())
-            absolute_filename = os.path.join(document, filename)
-            hash_file(absolute_filename)
-    else:
-        hash_file(document)
+    for b in all_blocks():
+        digest.update(b)
 
     return digest.hexdigest()
 
