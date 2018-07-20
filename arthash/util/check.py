@@ -43,3 +43,9 @@ SHA256 = Checker(
     chars='0123456789abcdef',
     length=64,
     min_entropy=3)
+
+
+def check_request(*, art_hash, public_key, signature):
+    SHA256(art_hash)
+    RSAPublicKey(public_key)
+    RSASignature(signature)

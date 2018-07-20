@@ -9,19 +9,17 @@ class RequestHandler:
         self.record_hash = None
         self.keeper = keeper.DictKeeper(root, organization)
 
-    def receive(self, art_hash, public_key, signature):
-        check.SHA256(art_hash)
-        check.RSAPublicKey(public_key)
-        check.RSASignature(signature)
-        timestamp = keeper.timestamp()
+    def receive(self, message):
+        original_keys = tuple(message)
+        check.check_request(**message)
 
-        record_hash = None
-        record = {
-            'art_hash': art_hash,
-            'public_key': public_key,
-            'record_hash': record_hash,
-            'signature': signature,
-            'timestamp': timestamp,
-        }
+        message['timestamp'] = keeper.timestamp()
+        message['record_hash'] = hasher.record_hash(**message)
 
-        self.keeper.add_record(record)
+        self.keeper.add_record(message)
+        message['urls'] = self.keeper.last
+
+        for k in original_keys:
+            message.pop(k)
+
+        return flask.jsonify(message)

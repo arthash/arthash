@@ -11,55 +11,73 @@ HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
 
 
-def hasher(document, chunksize):
-    def file_blocks(filename):
-        with open(filename, 'rb') as fp:
-            while True:
-                buf = fp.read(chunksize)
-                if not buf:
-                    return
-                yield buf
+def hasher(root, chunksize):
+    """
+    Return the artHash of all the documents at or below this on in the
+    filesystem, listed recursively in sorted order as defined by the
+    function walk(), with documents or directories that start with a
+    '.' excluded from this list.
 
-    def all_blocks():
-        yield os.path.basename(document)
-
-        if not os.path.isdir(document):
-            yield from file_blocks(document)
-            return
-
-        for filename in walk(document):
-            yield filename
-            yield from file_blocks(os.path.join(document, filename))
-
-    return hash_iterator(all_blocks())
+    This hasher is fixed and reproducible.  The return value is not dependent
+    on the chunksize.
+    """
+    return _hash_each(_all_items(root, chunksize))
 
 
-def walk(document):
-    results = []
-    for dirpath, dirnames, filenames in os.walk(document):
-        dirnames[:] = exclude(dirnames)
-        for f in exclude(filenames):
+def record_hash(*, art_hash, public_key, signature, timestamp):
+    """
+    Return the record_hash for a record with exactly these four fields.
+
+    This function is fixed and reproducible.
+    """
+    return _hash_each((art_hash, public_key, signature, timestamp))
+
+
+def walk(root):
+    """Yield each document below root, except excluded ones."""
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = _exclude(dirnames)
+        for f in _exclude(filenames):
             path = os.path.join(dirpath, f)
-            results.append(os.path.relpath(path, document))
-
-    results.sort()
-    return results
+            yield os.path.relpath(path, root)
 
 
-def hash_iterator(it):
+def _hash_each(items):
+    """Create a digest, update with each item and return the hexdigest."""
     digest = HASH_CLASS()
-    for s in it:
-        digest.update(s.encode() if isinstance(s, str) else s)
+
+    for i in items:
+        b = i.encode() if isinstance(i, str) else i
+        digest.update(b)
 
     return digest.hexdigest()
 
 
-def record_hash(*, art_hash, public_key, signature, timestamp):
-    record = art_hash, public_key, signature, timestamp
-    return hash_iterator(record)
+def _file_chunks(filename, chunksize):
+    """Yield a series of chunks from a binary file"""
+    with open(filename, 'rb') as fp:
+        while True:
+            buf = fp.read(chunksize)
+            if not buf:
+                return
+            yield buf
 
 
-def exclude(files):
+def _all_items(root, chunksize):
+    """Yields all the items that get hashed"""
+    yield os.path.basename(root)
+
+    if not os.path.isdir(root):
+        yield from _file_chunks(root, chunksize)
+        return
+
+    for filename in sorted(walk(root)):
+        yield filename
+        full_filename = os.path.join(root, filename)
+        yield from _file_chunks(full_filename, chunksize)
+
+
+def _exclude(files):
     for f in files:
         if not any(f.startswith(p) for p in EXCLUDED_PREFIXES):
             yield f

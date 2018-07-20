@@ -7,8 +7,8 @@ NAME = 'arthashd'
 
 
 class Server:
-    def __init__(self, port, external_access, handler=None, **kwds):
-        self.handler = handler
+    def __init__(self, port, external_access, receive=None, **kwds):
+        self.receive = receive
         self.port = port
         self.hostname = '0.0.0.0' if external_access else 'localhost'
         self.server.route('/', methods=['PUT'])(self.put)
@@ -19,7 +19,7 @@ class Server:
 
     def put(self):
         try:
-            self.handler(**flask.request.values)
+            self.receive(flask.request.values)
         except:
             flask.abort(http.client.BAD_REQUEST)
 
