@@ -3,7 +3,7 @@ from .. util import data_file, files
 from . import arguments
 
 
-def verification(document, certificate, args):
+def verification(document, certificate):
     """
     Returns the timestamp when the arthash in the certificate was journaled.
 

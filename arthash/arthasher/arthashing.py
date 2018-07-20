@@ -17,8 +17,8 @@ def signed_hash(document):
     return private_key, data
 
 
-def distribute_to_server(args, data):
-    url = '%s:%s%s' % (args.server, args.port, constants.PUT_URL)
+def distribute_to_server(data, server, port):
+    url = '%s:%s%s' % (server, port, constants.PUT_URL)
     response = requests.put(url, data=data).json()
 
     if set(response) != RESPONSE_KEYS:
@@ -40,9 +40,9 @@ def write_data(data):
     print(json.dumps(data, indent=2))
 
 
-def arthashing(args):
-    private_key, data = signed_hash(args.document)
-    response = data or distribute_to_server(args, data)
+def arthashing(document, server, port):
+    private_key, data = signed_hash(document)
+    response = data or distribute_to_server(data, server, port)
 
     pks = crypto.private_key_to_string(private_key)
     data = dict(response, private_key=pks)
