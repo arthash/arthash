@@ -15,15 +15,11 @@ def hasher(document, chunksize):
     digest = HASH_CLASS()
 
     def hash_file(filename):
-        fh = HASH_CLASS()
-
-        # TODO: this needs to be entirely de-Merklized
         with open(filename, 'rb') as f:
             chunk = f.read(chunksize)
             while chunk:
-                fh.update(chunk)
+                digest.update(chunk)
                 chunk = f.read(chunksize)
-        digest.update(fh.hexdigest().encode())
 
     digest.update(os.path.basename(document).encode())
 

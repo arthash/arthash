@@ -5,7 +5,7 @@ from unittest import mock
 BASE = os.path.dirname(__file__)
 BASE_DATA = os.path.join(BASE, 'data')
 IDENTICAL_DATA = os.path.join(BASE, 'identical_data', 'data')
-DATA_HASH = 'f23fd0692a4645bac4ca46eabea0e336f8b5a3677a154ad2dcf78c9ec24d95e5'
+DATA_HASH = 'a7628a45fa12cfa8859e8bd7ceb8b2b399e85557e2c6b9b2a93351044285dc20'
 
 
 class HasherTest(unittest.TestCase):
@@ -63,26 +63,18 @@ class HasherTest(unittest.TestCase):
             ['! create !',
              b'data',
              b'bar.txt',
-             '! create !',
              b'Bar ',
              b'bar ',
              b'bar\n',
-             b'9991fc202dd65996570a011278b77105abcc2cb3c5955ac9ffc1f4a0c1839568',
              b'foo.txt',
-             '! create !',
              b'Foo ',
              b'foo ',
              b'foo\n',
-             b'4022b6217dfa5312830e5b005726a362ee438a237f42d5d257ab48cb96b8ae8f',
              b'sub/fred.txt',
-             '! create !',
              b'Fred',
              b' is ',
              b'red.',
              b'\n',
-             b'83553dcb8323a817ebd706c3bd440f56b0f1cd7844e6159af8bedbede5924703',
              b'sub/stuff.json',
-             '! create !',
              b'{}\n',
-             b'ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356'
              ])
