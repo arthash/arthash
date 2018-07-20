@@ -6,12 +6,10 @@ from .. util import check, hasher
 
 class RecordKeeper(keeper.Keeper):
     def _get_record(self, data):
-        record = collections.OrderedDict(sorted(data.items()))
-        assert hasher.KEYS == tuple(record)
-        return record
+        return data
 
-    def add_record(self, **data):
-        super().add_record(data)
+    def new_record(self, **data):
+        self.add_record(data)
 
     def url(self):
         return os.path.relpath(self.last, self.root)
@@ -39,7 +37,7 @@ class RequestHandler:
             signature=signature,
             timestamp=timestamp)
 
-        self.keeper.add_record(
+        self.keeper.new_record(
             art_hash=art_hash,
             record_hash=new_record_hash,
             signature=signature,
