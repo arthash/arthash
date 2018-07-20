@@ -26,5 +26,7 @@ class CheckTest(unittest.TestCase):
 
     def test_RSA_public_key(self):
         for i in range(4):
-            public, _ = crypto.public_private_key()
-            check.RSAPublicKey(public)
+            private_key = crypto.make_private_key()
+            public_key = private_key.public_key()
+            pstring = crypto.public_key_to_string(public_key)
+            check.RSAPublicKey(pstring)

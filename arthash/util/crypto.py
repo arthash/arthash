@@ -19,30 +19,27 @@ def make_private_key():
         key_size=KEY_SIZE)
 
 
-def public_key_string(private_key):
-    return private_key.public_key().public_bytes(
+def public_key_to_string(public_key):
+    return public_key.public_bytes(
         serialization.Encoding.OpenSSH,
         serialization.PublicFormat.OpenSSH,
     ).decode()
 
 
-def private_key_string(private_key):
+def private_key_to_string(private_key):
     return private_key.private_bytes(
         serialization.Encoding.PEM,
-        serialization.PrivateFormat.TraditionalOpenSSL,
+        serialization.PrivateFormat.PKCS8,
         serialization.NoEncryption()).decode()
 
 
-def public_private_key():
-    private_key = make_private_key()
-    public = public_key_string(private_key)
-    private = private_key_string(private_key)
-    return public, private
+def string_to_public_key(s):
+    return serialization.load_ssh_public_key(s.encode(), backend=BACKEND)
 
 
-def string_to_private_key(str):
-    s = str.encode()
-    return serialization.load_pem_private_key(s, password=None, backend=BACKEND)
+def string_to_private_key(s):
+    e = str.encode()
+    return serialization.load_pem_private_key(e, password=None, backend=BACKEND)
 
 
 def _make_padding():

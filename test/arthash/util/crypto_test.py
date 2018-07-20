@@ -4,7 +4,12 @@ from arthash.util import check, crypto
 
 class CryptoTest(unittest.TestCase):
     def test_works(self):
-        public, private = crypto.public_private_key()
+        private_key = crypto.make_private_key()
+        private = crypto.private_key_to_string(private_key)
+
+        public_key = private_key.public_key()
+        public = crypto.public_key_to_string(public_key)
+
         self.assertEqual(len(public), 380)
         self.assertTrue(len(private) > 1670, len(private))
         self.assertTrue(len(private) < 1796, len(private))

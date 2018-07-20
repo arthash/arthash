@@ -7,11 +7,12 @@ RESPONSE_KEYS = set(('timestamp', 'record_hash', 'journal_urls'))
 
 def signed_hash(document):
     private_key = crypto.make_private_key()
+    public_key = private_key.public_key()
     art_hash = files.hash_document(document)
     data = {
         'art_hash': art_hash,
         'signature': crypto.sign(private_key, art_hash),
-        'public_key': crypto.public_key_string(private_key),
+        'public_key': crypto.public_key_to_string(public_key),
     }
     return private_key, data
 
@@ -43,6 +44,6 @@ def arthashing(args):
     private_key, data = signed_hash(args.document)
     response = data or distribute_to_server(args, data)
 
-    pks = crypto.private_key_string(private_key)
+    pks = crypto.private_key_to_string(private_key)
     data = dict(response, private_key=pks)
     write_data(data)
