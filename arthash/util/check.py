@@ -45,7 +45,7 @@ SHA256 = Checker(
     min_entropy=3)
 
 
-def check_request(*, art_hash, public_key, signature):
+def check_request(art_hash, public_key, signature):
     SHA256(art_hash)
     RSAPublicKey(public_key)
     RSASignature(signature)

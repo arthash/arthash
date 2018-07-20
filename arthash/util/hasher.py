@@ -10,6 +10,7 @@ import hashlib, os
 HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
 SEPARATOR = b'\0'
+RECORD_KEYS = 'art_hash', 'public_key', 'record_hash', 'signature', 'timestamp'
 
 
 def hasher(root, chunksize):
@@ -25,13 +26,16 @@ def hasher(root, chunksize):
     return _hash_each(_all_items(root, chunksize))
 
 
-def record_hash(*, art_hash, public_key, record_hash, signature, timestamp):
+def record_hash(**record):
     """
     Return the record_hash for a record with exactly these five fields.
 
     This function is fixed and reproducible.
     """
-    return _hash_each((art_hash, public_key, record_hash, signature, timestamp))
+    if len(record) != len(RECORD_KEYS):
+        raise ValueError
+
+    return _hash_each((record[k] for k in RECORD_KEYS))
 
 
 def walk(root):
