@@ -19,7 +19,8 @@ class Server:
 
     def put(self):
         try:
-            self.receive(flask.request.values)
+            result = self.receive(flask.request.values)
+            return flask.jsonify(result)
         except:
             flask.abort(http.client.BAD_REQUEST)
 

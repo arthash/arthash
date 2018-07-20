@@ -35,8 +35,8 @@ class HasherTest(unittest.TestCase):
         self.assertNotEqual(h0, h1)
 
     def test_record_hash(self):
-        kwds = {'art_hash': 'a', 'public_key': 'b',
-                'signature': 'c', 'timestamp': 'd'}
+        kwds = {'art_hash': 'a', 'public_key': 'b', 'record_hash': 'c',
+                'signature': 'd', 'timestamp': 'e'}
         h = hasher.record_hash(**kwds)
         self.assertEqual(h, RECORD_HASH)
 
@@ -66,7 +66,7 @@ BASE = os.path.dirname(__file__)
 BASE_DATA = os.path.join(BASE, 'data')
 IDENTICAL_DATA = os.path.join(BASE, 'identical_data', 'data')
 DATA_HASH = '528323ca259861d232a4eef2c4dd6666f6b666233dba119f57f5e291450d6872'
-RECORD_HASH = '88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'
+RECORD_HASH = '36bbe50ed96841d10443bcb670d6554f0a34b761be67ec9c4a8ad2c0c44ca42c'
 HASH_CALLS = [
     b'! create !',
     b'data',

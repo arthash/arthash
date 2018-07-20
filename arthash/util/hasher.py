@@ -25,13 +25,13 @@ def hasher(root, chunksize):
     return _hash_each(_all_items(root, chunksize))
 
 
-def record_hash(*, art_hash, public_key, signature, timestamp):
+def record_hash(*, art_hash, public_key, record_hash, signature, timestamp):
     """
-    Return the record_hash for a record with exactly these four fields.
+    Return the record_hash for a record with exactly these five fields.
 
     This function is fixed and reproducible.
     """
-    return _hash_each((art_hash, public_key, signature, timestamp))
+    return _hash_each((art_hash, public_key, record_hash, signature, timestamp))
 
 
 def walk(root):
