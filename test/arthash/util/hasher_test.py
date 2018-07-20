@@ -65,24 +65,32 @@ class HasherTest(unittest.TestCase):
 BASE = os.path.dirname(__file__)
 BASE_DATA = os.path.join(BASE, 'data')
 IDENTICAL_DATA = os.path.join(BASE, 'identical_data', 'data')
-DATA_HASH = 'a7628a45fa12cfa8859e8bd7ceb8b2b399e85557e2c6b9b2a93351044285dc20'
+DATA_HASH = '528323ca259861d232a4eef2c4dd6666f6b666233dba119f57f5e291450d6872'
 RECORD_HASH = '88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'
 HASH_CALLS = [
     b'! create !',
     b'data',
+    hasher.SEPARATOR,
     b'bar.txt',
+    hasher.SEPARATOR,
     b'Bar ',
     b'bar ',
     b'bar\n',
+    hasher.SEPARATOR,
     b'foo.txt',
+    hasher.SEPARATOR,
     b'Foo ',
     b'foo ',
     b'foo\n',
+    hasher.SEPARATOR,
     b'sub/fred.txt',
+    hasher.SEPARATOR,
     b'Fred',
     b' is ',
     b'red.',
     b'\n',
+    hasher.SEPARATOR,
     b'sub/stuff.json',
+    hasher.SEPARATOR,
     b'{}\n',
 ]

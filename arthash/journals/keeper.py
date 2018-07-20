@@ -41,7 +41,6 @@ class Keeper:
         if not exists:
             index_files.write_indexes(self.last, self.org.levels)
 
-
     def _get_record(self, *args):
         return list(args) + [timestamp()]
 

@@ -9,6 +9,7 @@ import hashlib, os
 
 HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
+SEPARATOR = b'\0'
 
 
 def hasher(root, chunksize):
@@ -68,12 +69,18 @@ def _all_items(root, chunksize):
     yield os.path.basename(root)
 
     if not os.path.isdir(root):
+        yield SEPARATOR
         yield from _file_chunks(root, chunksize)
+
         return
 
     for filename in sorted(walk(root)):
-        yield filename
         full_filename = os.path.join(root, filename)
+
+        yield SEPARATOR
+        yield filename
+
+        yield SEPARATOR
         yield from _file_chunks(full_filename, chunksize)
 
 
