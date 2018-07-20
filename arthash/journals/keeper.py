@@ -29,7 +29,7 @@ class Keeper:
             next_parts = self.org.next_file(parts)
             self._set_last(os.path.join(self.root, next_parts))
 
-        self.page.append(list(args) + [timestamp()])
+        self.page.append(self._get_record(*args))
 
         exists = os.path.exists(self.last)
         if not exists:
@@ -40,6 +40,9 @@ class Keeper:
 
         if not exists:
             index_files.write_indexes(self.last, self.org.levels)
+
+    def _get_record(self, *args):
+        return list(args) + [timestamp()]
 
     def _set_last(self, last):
         self.last = last
