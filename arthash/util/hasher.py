@@ -21,20 +21,17 @@ def hasher(document, chunksize):
                 yield buf
 
     def all_blocks():
-        yield os.path.basename(document).encode()
+        yield os.path.basename(document)
 
-        if os.path.isdir(document):
-            for filename in walk(document):
-                yield filename.encode()
-                yield from file_blocks(os.path.join(document, filename))
-        else:
+        if not os.path.isdir(document):
             yield from file_blocks(document)
+            return
 
-    digest = HASH_CLASS()
-    for b in all_blocks():
-        digest.update(b)
+        for filename in walk(document):
+            yield filename
+            yield from file_blocks(os.path.join(document, filename))
 
-    return digest.hexdigest()
+    return hash_iterator(all_blocks())
 
 
 def walk(document):
@@ -45,7 +42,21 @@ def walk(document):
             path = os.path.join(dirpath, f)
             results.append(os.path.relpath(path, document))
 
-    return results.sort() or results
+    results.sort()
+    return results
+
+
+def hash_iterator(it):
+    digest = HASH_CLASS()
+    for s in it:
+        digest.update(s.encode() if isinstance(s, str) else s)
+
+    return digest.hexdigest()
+
+
+def record_hash(*, art_hash, public_key, signature, timestamp):
+    record = art_hash, public_key, signature, timestamp
+    return hash_iterator(record)
 
 
 def exclude(files):

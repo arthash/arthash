@@ -2,11 +2,6 @@ import hashlib, os, unittest
 from arthash.util import hasher
 from unittest import mock
 
-BASE = os.path.dirname(__file__)
-BASE_DATA = os.path.join(BASE, 'data')
-IDENTICAL_DATA = os.path.join(BASE, 'identical_data', 'data')
-DATA_HASH = 'a7628a45fa12cfa8859e8bd7ceb8b2b399e85557e2c6b9b2a93351044285dc20'
-
 
 class HasherTest(unittest.TestCase):
     def test_simple(self):
@@ -39,6 +34,12 @@ class HasherTest(unittest.TestCase):
         h1 = hasher.hasher(os.path.join(BASE, 'different_data'), 100)
         self.assertNotEqual(h0, h1)
 
+    def test_record_hash(self):
+        kwds = {'art_hash': 'a', 'public_key': 'b',
+                'signature': 'c', 'timestamp': 'd'}
+        h = hasher.record_hash(**kwds)
+        self.assertEqual(h, RECORD_HASH)
+
     @mock.patch('arthash.util.hasher.HASH_CLASS', autospec=True)
     def test_calls(self, HASH_CLASS):
         calls = []
@@ -46,7 +47,7 @@ class HasherTest(unittest.TestCase):
         class MockHasher:
             def __init__(self, *args, **kwds):
                 self.hasher = hashlib.sha256(*args, **kwds)
-                calls.append('! create !')
+                calls.append(b'! create !')
 
             def update(self, b):
                 self.hasher.update(b)
@@ -58,23 +59,30 @@ class HasherTest(unittest.TestCase):
         HASH_CLASS.side_effect = MockHasher
         h0 = hasher.hasher(BASE_DATA, 4)
         self.assertEqual(h0, DATA_HASH)
-        self.assertEqual(
-            calls,
-            ['! create !',
-             b'data',
-             b'bar.txt',
-             b'Bar ',
-             b'bar ',
-             b'bar\n',
-             b'foo.txt',
-             b'Foo ',
-             b'foo ',
-             b'foo\n',
-             b'sub/fred.txt',
-             b'Fred',
-             b' is ',
-             b'red.',
-             b'\n',
-             b'sub/stuff.json',
-             b'{}\n',
-             ])
+        self.assertEqual(calls, HASH_CALLS)
+
+
+BASE = os.path.dirname(__file__)
+BASE_DATA = os.path.join(BASE, 'data')
+IDENTICAL_DATA = os.path.join(BASE, 'identical_data', 'data')
+DATA_HASH = 'a7628a45fa12cfa8859e8bd7ceb8b2b399e85557e2c6b9b2a93351044285dc20'
+RECORD_HASH = '88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'
+HASH_CALLS = [
+    b'! create !',
+    b'data',
+    b'bar.txt',
+    b'Bar ',
+    b'bar ',
+    b'bar\n',
+    b'foo.txt',
+    b'Foo ',
+    b'foo ',
+    b'foo\n',
+    b'sub/fred.txt',
+    b'Fred',
+    b' is ',
+    b'red.',
+    b'\n',
+    b'sub/stuff.json',
+    b'{}\n',
+]

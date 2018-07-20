@@ -1,4 +1,4 @@
-import datetime, json, os
+import collections, datetime, json, os
 from . import index_files
 from . import organization as org
 from .. util import files
@@ -47,6 +47,11 @@ class Keeper:
     def _set_last(self, last):
         self.last = last
         self.page = []
+
+
+class DictKeeper(Keeper):
+    def _get_record(self, data):
+        return collections.OrderedDict(sorted(data.items()))
 
 
 def timestamp():
