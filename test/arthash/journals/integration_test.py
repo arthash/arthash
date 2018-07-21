@@ -5,7 +5,14 @@ from arthash.journals import keeper, organization
 from arthash.util import hasher
 
 
-class IntegrationTest(unittest.TestCase):
+# TODO: I'm disabling this test because it really only tests
+# the most boring part of this - writing things in journals.
+#
+# My plan is to create a proper integration test which fires up a webserver,
+# runs the client and does some (simulated) cryptography, and then tests the
+# results - and then I'll reuse this code.
+
+class IntegrationTest:  # (unittest.TestCase):  disabled
     def do_test(self, i):
         errors = list(Reader(i).test())
         self.assertEqual(errors, [])
@@ -57,7 +64,7 @@ class IntegrationDesc:
             timestamp.side_effect = self.timestamp
 
             for i in range(int(self.count)):
-                hf.add_record(self.random_hash())
+                hf.add_record(arthash=self.random_hash())
 
     def random_hash(self):
         return ''.join(self.HEX[random.randrange(16)] for i in range(64))
