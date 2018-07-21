@@ -1,4 +1,6 @@
-# Deliverable for stage 1.
+## Deliverable for stage 1.
+
+# Install
 
 `pip install` should get the user:
 
@@ -6,7 +8,7 @@
 * a command line program `artHashD` that runs the server
 * a command line program called `artHashEr` that runs the client
 
-# To demo:
+# Demo:
 
 1. Open a terminal window
 2. Run `artHashD` in it
@@ -19,3 +21,8 @@
   4. Receive back the `timestamp`, `recordHash` and `journalURL`.
   5. Write a JSON file containing those values and the privateKey to the terminal
   6. open the journal page in the browser
+
+# Integration tests
+
+Automated tests that actually start a server, then run the client repeatedly
+against that server, then interrogate the server's state when it is all done.
