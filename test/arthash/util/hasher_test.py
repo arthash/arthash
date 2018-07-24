@@ -4,6 +4,8 @@ from unittest import mock
 
 
 class HasherTest(unittest.TestCase):
+    maxDiff = 10000
+
     def test_simple(self):
         h1 = hasher.hasher(BASE_DATA, 10)
         self.assertEqual(h1, DATA_HASH)
@@ -27,7 +29,7 @@ class HasherTest(unittest.TestCase):
     def test_identical_file_different_name(self):
         h0 = hasher.hasher(os.path.join(BASE_DATA, 'bar.txt'), 4)
         h1 = hasher.hasher(os.path.join(BASE, 'bad.txt'), 4)
-        self.assertNotEqual(h0, h1)
+        self.assertEqual(h0 != h1, hasher.HASH_ROOT_ITEM)
 
     def test_different(self):
         h0 = hasher.hasher(BASE_DATA, 100)
@@ -68,12 +70,11 @@ class HasherTest(unittest.TestCase):
 BASE = os.path.dirname(__file__)
 BASE_DATA = os.path.join(BASE, 'data')
 IDENTICAL_DATA = os.path.join(BASE, 'identical_data', 'data')
-DATA_HASH = '2da48c84ce13139f153e6ffc271b8db8cdcd3586050953d9251a6e3342f45bad'
+DATA_HASH = 'e3a9b8f0b0dcb706c0234111b3b2a4a6793b0db5d039090a74f307d9dad7611d'
 RECORD_HASH = '59944b2620627fdafbcfbdb4b8effb6381d568f4136f4e0cd609679a451b6cf0'
 HASH_CALLS = [
     b'! create !',
     hasher.Salt.ITEM[0],
-    b'data',
     hasher.SEPARATOR,
     b'bar.txt',
     hasher.SEPARATOR,
@@ -99,5 +100,5 @@ HASH_CALLS = [
     b'{}\n',
     b'! create !',
     b',QwpK}_}D(r_p]L/$>f-{8-~I_:DIJH][I_C51u-<}~oJw/qE(W{1*#[;:>GpNg-',
-    b'R\x84\xb7[\x900\xe3\x13\xdc\xb6\xff\xaen\xc7y\xe3]\xb9\xa3S\xed\x89\x8ak'
-    b'9\x0e\x90^H\x07~\xe2']
+    b'\xf0\xbc\x121=\xa0W\xa8{1.\xff\x17\xef,X\xa7\xcd\xbf\xca\x943s\xe3\n\x968v'
+    b'h\xac\x9fu']

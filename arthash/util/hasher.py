@@ -10,7 +10,7 @@ import binascii, hashlib, os
 HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
 SEPARATOR = b'\0'
-HASH_ROOT_ITEM = True
+HASH_ROOT_ITEM = False
 
 
 def hasher(root, chunksize):
