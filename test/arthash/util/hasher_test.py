@@ -69,6 +69,7 @@ DATA_HASH = '528323ca259861d232a4eef2c4dd6666f6b666233dba119f57f5e291450d6872'
 RECORD_HASH = '36bbe50ed96841d10443bcb670d6554f0a34b761be67ec9c4a8ad2c0c44ca42c'
 HASH_CALLS = [
     b'! create !',
+    b'',
     b'data',
     hasher.SEPARATOR,
     b'bar.txt',

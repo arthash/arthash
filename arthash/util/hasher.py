@@ -10,6 +10,7 @@ import hashlib, os
 HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
 SEPARATOR = b'\0'
+SALT = b''
 
 
 def hasher(root, chunksize):
@@ -46,6 +47,7 @@ def walk(root):
 def _hash_each(items):
     """Create a digest, update with each item and return the hexdigest."""
     digest = HASH_CLASS()
+    digest.update(SALT)
 
     for i in items:
         b = i.encode() if isinstance(i, str) else i
