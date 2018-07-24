@@ -10,6 +10,7 @@ import binascii, hashlib, os
 HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
 SEPARATOR = b'\0'
+HASH_ROOT_ITEM = True
 
 
 def hasher(root, chunksize):
@@ -70,19 +71,10 @@ def _hash_once(items, salt):
     return digest.digest()
 
 
-def _file_chunks(filename, chunksize):
-    """Yield a series of chunks from a binary file"""
-    with open(filename, 'rb') as fp:
-        while True:
-            buf = fp.read(chunksize)
-            if not buf:
-                return
-            yield buf
-
-
 def _items(root, chunksize):
     """Yields all the items that get hashed"""
-    yield os.path.basename(root)
+    if HASH_ROOT_ITEM:
+        yield os.path.basename(root)
 
     if not os.path.isdir(root):
         yield SEPARATOR
@@ -98,6 +90,16 @@ def _items(root, chunksize):
 
         yield SEPARATOR
         yield from _file_chunks(full_filename, chunksize)
+
+
+def _file_chunks(filename, chunksize):
+    """Yield a series of chunks from a binary file"""
+    with open(filename, 'rb') as fp:
+        while True:
+            buf = fp.read(chunksize)
+            if not buf:
+                return
+            yield buf
 
 
 def _exclude(files):
