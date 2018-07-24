@@ -116,6 +116,8 @@ class Salt:
         b'{AGbv]u)<xay>*W-rkS-ZacZwh@~xJ>ztvZiXr^lSb+zhc=!G$.JnWqXLPyUBwT=',
         b'rxz{dk0@hSu?.iweXzyv3OE`S[0(Kn!9[1D/tv{pAZ99=ZV*dP^>w&@bju.1*kPK')
 
-    SEPARATOR = b'\0'
-
-    FILE = [ SEPARATOR, SEPARATOR, SEPARATOR]
+    FILE = [
+        b'.8=E:puyS(@u$jqb-T#E+EsY?Da7hJ,u,JA(qNTOtQeihr^<|2KVg*i;#^e*PZ,d',
+        b'|+D,sPt$wt[]w^7Cv/QNS?Fm|R)K]-m!"g1/Z/+Iu_~:{{/?iivr{UPKZ3".qz-w',
+        b'2}X4J#.vZ&AV"89EMXUHH}aDXX;`(9$L;5MI*;r{XB0"rTlP"r{U+,=5$A+{iX/M'
+        ]

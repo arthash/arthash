@@ -70,35 +70,35 @@ class HasherTest(unittest.TestCase):
 BASE = os.path.dirname(__file__)
 BASE_DATA = os.path.join(BASE, 'data')
 IDENTICAL_DATA = os.path.join(BASE, 'identical_data', 'data')
-DATA_HASH = 'e3a9b8f0b0dcb706c0234111b3b2a4a6793b0db5d039090a74f307d9dad7611d'
+DATA_HASH = '01a1aa5d2a4aa2cf3e836057581768647bd267e4f0987f043ad6852f02617aec'
 RECORD_HASH = '59944b2620627fdafbcfbdb4b8effb6381d568f4136f4e0cd609679a451b6cf0'
 HASH_CALLS = [
     b'! create !',
     hasher.Salt.ITEM[0],
-    hasher.Salt.FILE[0],
+    hasher.Salt.FILE[1],
     b'bar.txt',
-    hasher.Salt.FILE[0],
+    hasher.Salt.FILE[2],
     b'Bar ',
     b'bar ',
     b'bar\n',
-    hasher.Salt.FILE[0],
+    hasher.Salt.FILE[1],
     b'foo.txt',
-    hasher.Salt.FILE[0],
+    hasher.Salt.FILE[2],
     b'Foo ',
     b'foo ',
     b'foo\n',
-    hasher.Salt.FILE[0],
+    hasher.Salt.FILE[1],
     b'sub/fred.txt',
-    hasher.Salt.FILE[0],
+    hasher.Salt.FILE[2],
     b'Fred',
     b' is ',
     b'red.',
     b'\n',
-    hasher.Salt.FILE[0],
+    hasher.Salt.FILE[1],
     b'sub/stuff.json',
-    hasher.Salt.FILE[0],
+    hasher.Salt.FILE[2],
     b'{}\n',
     b'! create !',
     b',QwpK}_}D(r_p]L/$>f-{8-~I_:DIJH][I_C51u-<}~oJw/qE(W{1*#[;:>GpNg-',
-    b'\xf0\xbc\x121=\xa0W\xa8{1.\xff\x17\xef,X\xa7\xcd\xbf\xca\x943s\xe3\n\x968v'
-    b'h\xac\x9fu']
+    b'\x1e\xfd-=3Q\xe5*4\x96\xef\xd5\x91\xe3e}}\xed^\x1b#\x14\xa6_1\xe8\x04\xb2'
+    b'\xc4\xf7?D']
