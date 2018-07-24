@@ -65,11 +65,11 @@ class HasherTest(unittest.TestCase):
 BASE = os.path.dirname(__file__)
 BASE_DATA = os.path.join(BASE, 'data')
 IDENTICAL_DATA = os.path.join(BASE, 'identical_data', 'data')
-DATA_HASH = '528323ca259861d232a4eef2c4dd6666f6b666233dba119f57f5e291450d6872'
-RECORD_HASH = '36bbe50ed96841d10443bcb670d6554f0a34b761be67ec9c4a8ad2c0c44ca42c'
+DATA_HASH = '5284b75b9030e313dcb6ffae6ec779e35db9a353ed898a6b390e905e48077ee2'
+RECORD_HASH = 'a7db003322f321a742fee8c84cfbe66d59b60e57bdd411199bb8527e046b9ff8'
 HASH_CALLS = [
     b'! create !',
-    b'',
+    hasher.SALT,
     b'data',
     hasher.SEPARATOR,
     b'bar.txt',

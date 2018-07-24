@@ -10,7 +10,7 @@ import hashlib, os
 HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
 SEPARATOR = b'\0'
-SALT = b''
+SALT = b'b%IZfHOB5^T"d;(H"ok76J!/H3}W0/lJE{K1N`wa}tZ=E)IQ<>|1GCT<xY?=oP1$'
 
 
 def hasher(root, chunksize):
