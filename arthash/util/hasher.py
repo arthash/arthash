@@ -1,15 +1,14 @@
 ######
 #                   DANGER DANGER DANGER
 #
-#    CHANGING ANYTHING IN THIS FILE CAN CHANGE THE WHOLE HASH
-#    AND POTENTIALLY MAKE ALL HISTORICAL HASHES INVALID!
+#    CHANGING ANYTHING AT ALL IN THIS FILE CAN POTENTIALLY CHANGE THE WHOLE
+#    HASH AND MAKE ALL HISTORICAL HASHES INVALID!
 #
 
 import binascii, hashlib, os
 
 HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
-SEPARATOR = b'\0'
 HASH_ROOT_ITEM = False
 
 
@@ -77,18 +76,18 @@ def _items(root, chunksize):
         yield os.path.basename(root)
 
     if not os.path.isdir(root):
-        yield SEPARATOR
+        yield Salt.FILE[0]
         yield from _file_chunks(root, chunksize)
 
         return
 
     for filename in sorted(walk(root)):
-        full_filename = os.path.join(root, filename)
+        yield Salt.FILE[1]
 
-        yield SEPARATOR
+        full_filename = os.path.join(root, filename)
         yield filename
 
-        yield SEPARATOR
+        yield Salt.FILE[2]
         yield from _file_chunks(full_filename, chunksize)
 
 
@@ -116,3 +115,7 @@ class Salt:
     RECORD = (
         b'{AGbv]u)<xay>*W-rkS-ZacZwh@~xJ>ztvZiXr^lSb+zhc=!G$.JnWqXLPyUBwT=',
         b'rxz{dk0@hSu?.iweXzyv3OE`S[0(Kn!9[1D/tv{pAZ99=ZV*dP^>w&@bju.1*kPK')
+
+    SEPARATOR = b'\0'
+
+    FILE = [ SEPARATOR, SEPARATOR, SEPARATOR]
