@@ -29,7 +29,7 @@ class HasherTest(unittest.TestCase):
     def test_identical_file_different_name(self):
         h0 = hasher.hasher(os.path.join(BASE_DATA, 'bar.txt'), 4)
         h1 = hasher.hasher(os.path.join(BASE, 'bad.txt'), 4)
-        self.assertEqual(h0 != h1, hasher.HASH_ROOT_ITEM)
+        self.assertEqual(h0, h1)
 
     def test_different(self):
         h0 = hasher.hasher(BASE_DATA, 100)

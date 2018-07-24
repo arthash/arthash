@@ -9,7 +9,6 @@ import binascii, hashlib, os
 
 HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
-HASH_ROOT_ITEM = False
 
 
 def hasher(root, chunksize):
@@ -72,9 +71,6 @@ def _hash_once(items, salt):
 
 def _items(root, chunksize):
     """Yields all the items that get hashed"""
-    if HASH_ROOT_ITEM:
-        yield os.path.basename(root)
-
     if not os.path.isdir(root):
         yield Salt.FILE[0]
         yield from _file_chunks(root, chunksize)
@@ -119,5 +115,4 @@ class Salt:
     FILE = [
         b'.8=E:puyS(@u$jqb-T#E+EsY?Da7hJ,u,JA(qNTOtQeihr^<|2KVg*i;#^e*PZ,d',
         b'|+D,sPt$wt[]w^7Cv/QNS?Fm|R)K]-m!"g1/Z/+Iu_~:{{/?iivr{UPKZ3".qz-w',
-        b'2}X4J#.vZ&AV"89EMXUHH}aDXX;`(9$L;5MI*;r{XB0"rTlP"r{U+,=5$A+{iX/M'
-        ]
+        b'2}X4J#.vZ&AV"89EMXUHH}aDXX;`(9$L;5MI*;r{XB0"rTlP"r{U+,=5$A+{iX/M']
