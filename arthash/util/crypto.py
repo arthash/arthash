@@ -2,6 +2,7 @@ import binascii
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa, utils
+from . import hasher
 
 # https://stackoverflow.com/a/39126754/43839
 # https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/
@@ -52,7 +53,8 @@ def sign(private_key, hexdigest):
     digest = bytes.fromhex(hexdigest)
     pad = _make_padding()
     prehashed = utils.Prehashed(hashes.SHA256())
-    return to_hex(private_key.sign(digest, pad, prehashed))
+    signature = private_key.sign(digest, pad, prehashed)
+    return hasher.to_hex(signature)
 
 
 def verify(public_key, hexdigest, signature):
@@ -62,8 +64,3 @@ def verify(public_key, hexdigest, signature):
     prehashed = utils.Prehashed(hashes.SHA256())
 
     return public_key.verify(sig, digest, pad, prehashed)
-
-
-def to_hex(s):
-    # For Python 3.4 compatibility
-    return binascii.hexlify(s).decode()

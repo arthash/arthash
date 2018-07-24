@@ -5,12 +5,11 @@
 #    AND POTENTIALLY MAKE ALL HISTORICAL HASHES INVALID!
 #
 
-import hashlib, os
+import binascii, hashlib, os
 
 HASH_CLASS = hashlib.sha256
 EXCLUDED_PREFIXES = '.'
 SEPARATOR = b'\0'
-SALT = b'b%IZfHOB5^T"d;(H"ok76J!/H3}W0/lJE{K1N`wa}tZ=E)IQ<>|1GCT<xY?=oP1$'
 
 
 def hasher(root, chunksize):
@@ -23,7 +22,8 @@ def hasher(root, chunksize):
     This hasher is fixed and reproducible.  The return value is not dependent
     on the chunksize.
     """
-    return _hash_each(_all_items(root, chunksize))
+    items = _items(root, chunksize)
+    return _hasher(items, Salt.ITEM)
 
 
 def record_hash(*, art_hash, public_key, record_hash, signature, timestamp):
@@ -32,7 +32,8 @@ def record_hash(*, art_hash, public_key, record_hash, signature, timestamp):
 
     This function is fixed and reproducible.
     """
-    return _hash_each((art_hash, public_key, record_hash, signature, timestamp))
+    items = (art_hash, public_key, record_hash, signature, timestamp)
+    return _hasher(items, Salt.RECORD)
 
 
 def walk(root):
@@ -44,16 +45,29 @@ def walk(root):
             yield os.path.relpath(path, root)
 
 
-def _hash_each(items):
-    """Create a digest, update with each item and return the hexdigest."""
+def to_hex(s):
+    # For Python 3.4 compatibility
+    return binascii.hexlify(s).decode()
+
+
+def _hasher(items, salts):
+    """Hash an iterable of items once for each salt and return a hexdigest"""
+    for salt in salts:
+        items = [_hash_once(items, salt)]
+
+    return to_hex(items[0])
+
+
+def _hash_once(items, salt):
+    """Hash one time with a given salt"""
     digest = HASH_CLASS()
-    digest.update(SALT)
+    digest.update(salt)
 
     for i in items:
         b = i.encode() if isinstance(i, str) else i
         digest.update(b)
 
-    return digest.hexdigest()
+    return digest.digest()
 
 
 def _file_chunks(filename, chunksize):
@@ -66,7 +80,7 @@ def _file_chunks(filename, chunksize):
             yield buf
 
 
-def _all_items(root, chunksize):
+def _items(root, chunksize):
     """Yields all the items that get hashed"""
     yield os.path.basename(root)
 
@@ -90,3 +104,13 @@ def _exclude(files):
     for f in files:
         if not any(f.startswith(p) for p in EXCLUDED_PREFIXES):
             yield f
+
+
+class Salt:
+    ITEM = (
+        b'b%IZfHOB5^T"d;(H"ok76J!/H3}W0/lJE{K1N`wa}tZ=E)IQ<>|1GCT<xY?=oP1$',
+        b',QwpK}_}D(r_p]L/$>f-{8-~I_:DIJH][I_C51u-<}~oJw/qE(W{1*#[;:>GpNg-')
+
+    RECORD = (
+        b'{AGbv]u)<xay>*W-rkS-ZacZwh@~xJ>ztvZiXr^lSb+zhc=!G$.JnWqXLPyUBwT=',
+        b'rxz{dk0@hSu?.iweXzyv3OE`S[0(Kn!9[1D/tv{pAZ99=ZV*dP^>w&@bju.1*kPK')

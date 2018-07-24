@@ -1,5 +1,5 @@
 import hashlib, unittest, cryptography.exceptions
-from arthash.util import check, crypto
+from arthash.util import check, crypto, hasher
 
 
 class CryptoTest(unittest.TestCase):
@@ -28,4 +28,4 @@ class CryptoTest(unittest.TestCase):
         change = (sig[-1] + 1) % 256
         sig2 = sig[:-1] + bytes([change])
         with self.assertRaises(cryptography.exceptions.InvalidSignature):
-            crypto.verify(public_key, hexdigest, crypto.to_hex(sig2))
+            crypto.verify(public_key, hexdigest, hasher.to_hex(sig2))

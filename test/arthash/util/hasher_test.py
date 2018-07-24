@@ -53,6 +53,9 @@ class HasherTest(unittest.TestCase):
                 self.hasher.update(b)
                 calls.append(b)
 
+            def digest(self):
+                return self.hasher.digest()
+
             def hexdigest(self):
                 return self.hasher.hexdigest()
 
@@ -65,11 +68,11 @@ class HasherTest(unittest.TestCase):
 BASE = os.path.dirname(__file__)
 BASE_DATA = os.path.join(BASE, 'data')
 IDENTICAL_DATA = os.path.join(BASE, 'identical_data', 'data')
-DATA_HASH = '5284b75b9030e313dcb6ffae6ec779e35db9a353ed898a6b390e905e48077ee2'
-RECORD_HASH = 'a7db003322f321a742fee8c84cfbe66d59b60e57bdd411199bb8527e046b9ff8'
+DATA_HASH = '2da48c84ce13139f153e6ffc271b8db8cdcd3586050953d9251a6e3342f45bad'
+RECORD_HASH = '59944b2620627fdafbcfbdb4b8effb6381d568f4136f4e0cd609679a451b6cf0'
 HASH_CALLS = [
     b'! create !',
-    hasher.SALT,
+    hasher.Salt.ITEM[0],
     b'data',
     hasher.SEPARATOR,
     b'bar.txt',
@@ -94,4 +97,7 @@ HASH_CALLS = [
     b'sub/stuff.json',
     hasher.SEPARATOR,
     b'{}\n',
-]
+    b'! create !',
+    b',QwpK}_}D(r_p]L/$>f-{8-~I_:DIJH][I_C51u-<}~oJw/qE(W{1*#[;:>GpNg-',
+    b'R\x84\xb7[\x900\xe3\x13\xdc\xb6\xff\xaen\xc7y\xe3]\xb9\xa3S\xed\x89\x8ak'
+    b'9\x0e\x90^H\x07~\xe2']
